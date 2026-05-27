@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm view *)",
+      "Bash(git -C /Users/djmarkovic999/projects/vir-obsidian status)",
+      "Bash(vir --version)",
+      "Bash(npm --version)",
+      "Bash(gh --version)",
+      "Bash(vir --help)",
+      "Bash(vir doctor *)",
+      "Bash(vir query *)",
+      "Bash(npm install *)",
+      "Bash(npm ls *)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m 'chore: scaffold vir-obsidian plugin \\(config, build, manifest\\) *)"
+    ]
+  }
+}

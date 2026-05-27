@@ -1,0 +1,10 @@
+{
+	"id": "vir",
+	"name": "Vir",
+	"version": "0.1.0",
+	"minAppVersion": "1.4.0",
+	"description": "An LLM Wiki for Claude Code, in your Obsidian sidebar. Surface relevant notes from your distilled session knowledge as you work.",
+	"author": "Djordje Marković",
+	"authorUrl": "https://github.com/djolex999",
+	"isDesktopOnly": true
+}

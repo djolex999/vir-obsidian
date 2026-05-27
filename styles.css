@@ -1,0 +1,26 @@
+/* ---- status bar ---- */
+.vir-status { display: inline-flex; align-items: center; cursor: pointer; }
+.vir-status-dot { font-size: 0.7em; line-height: 1; }
+.vir-status-dot.is-ok { color: var(--color-green); }
+.vir-status-dot.is-stale { color: var(--color-yellow); }
+.vir-status-dot.is-down { color: var(--color-red); }
+.vir-status-dot.is-unknown { color: var(--text-muted); }
+
+/* ---- sidebar ---- */
+.vir-tabs { display: flex; gap: 4px; padding: 8px 8px 0; border-bottom: 1px solid var(--background-modifier-border); }
+.vir-tab { flex: 1; padding: 6px 10px; background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); cursor: pointer; font-size: var(--font-ui-small); }
+.vir-tab.is-active { color: var(--text-normal); border-bottom-color: var(--interactive-accent); }
+.vir-content { padding: 8px; overflow-y: auto; }
+
+/* ---- result rows ---- */
+.vir-row { padding: 8px; border-radius: 6px; cursor: pointer; }
+.vir-row:hover { background: var(--background-modifier-hover); }
+.vir-row-title { font-weight: 600; font-size: var(--font-ui-small); margin-bottom: 4px; }
+.vir-row-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: var(--font-ui-smaller); color: var(--text-muted); }
+.vir-badge { padding: 1px 6px; border-radius: 4px; font-size: var(--font-ui-smaller); color: var(--text-on-accent); }
+.vir-empty { padding: 24px 12px; text-align: center; color: var(--text-muted); font-size: var(--font-ui-small); }
+.vir-empty a { cursor: pointer; }
+
+/* ---- search modal ---- */
+.vir-search-input { width: 100%; margin-bottom: 8px; }
+.vir-search-results { max-height: 50vh; overflow-y: auto; }
