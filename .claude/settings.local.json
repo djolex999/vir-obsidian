@@ -15,7 +15,11 @@
       "Bash(git commit -q -m 'chore: scaffold vir-obsidian plugin \\(config, build, manifest\\) *)",
       "Bash(chmod +x tests/fixtures/*.mjs)",
       "Bash(npx vitest *)",
-      "Bash(git commit -q -m 'feat: types + tested logic layer \\(IPC client, format, frontmatter, query-text, status\\) *)"
+      "Bash(git commit -q -m 'feat: types + tested logic layer \\(IPC client, format, frontmatter, query-text, status\\) *)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"TSC_EXIT=$?\")",
+      "Bash(npm run *)",
+      "Bash(git commit -q -m 'feat: plugin UI + entry point \\(settings, sidebar tabs, search modal, status bar\\) *)"
     ]
   }
 }
