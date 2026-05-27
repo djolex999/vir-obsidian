@@ -41,4 +41,10 @@ describe("VirClient", () => {
 		const client = new VirClient(fx("fake-vir-slow.mjs"), { queryTimeoutMs: 100 });
 		await expect(client.query("hi", 3)).rejects.toBeInstanceOf(VirTimeoutError);
 	});
+
+	it("prepends the binary's own directory to PATH (so node-shebang CLIs resolve)", async () => {
+		const client = new VirClient(fx("fake-vir-echo-path.mjs"));
+		const results = await client.query("hi", 1);
+		expect(results[0].path).toBe("DIR_IN_PATH");
+	});
 });

@@ -1,4 +1,5 @@
 import { spawn } from "child_process";
+import { dirname, isAbsolute, delimiter } from "path";
 import type { VirQueryResult, VirDoctorResult, VirErrorPayload } from "./types";
 
 export class VirNotFoundError extends Error {
@@ -82,7 +83,13 @@ export class VirClient {
 				fn();
 			};
 
-			const child = spawn(this.binaryPath, args);
+			// GUI-launched Obsidian has a minimal PATH. The resolved binary is typically a
+			// node-shebang script (e.g. nvm: vir -> cli.js with `#!/usr/bin/env node`), so the
+			// child needs `node` — which lives beside the binary — on PATH. Prepend its dir.
+			const env = isAbsolute(this.binaryPath)
+				? { ...process.env, PATH: `${dirname(this.binaryPath)}${delimiter}${process.env.PATH ?? ""}` }
+				: process.env;
+			const child = spawn(this.binaryPath, args, { env });
 
 			const timer = setTimeout(() => {
 				finish(() => {
@@ -126,42 +133,61 @@ export class VirClient {
 	}
 }
 
+const DETECT_MARKER = "__VIR_BIN__";
+const DETECT_TIMEOUT_MS = 8_000;
+
 /**
- * Resolve an absolute path to the vir binary. Runs through a login shell on POSIX so
- * nvm/asdf-installed binaries resolve (Electron's spawn PATH omits them). Best-effort.
+ * Resolve an absolute path to the vir binary. GUI-launched apps (Obsidian from the Dock)
+ * have a minimal PATH that omits nvm/asdf. On POSIX we run an *interactive login* shell
+ * (`-i -l -c`) so `~/.zshrc`/`~/.bashrc` — where nvm/asdf init lives — gets sourced; a plain
+ * login shell does not source those. Output is sentinel-wrapped so noisy shell startup
+ * (themes, instant prompt) can't pollute the parsed path. Best-effort; null on any failure.
  */
 export function detectVirBinary(): Promise<string | null> {
-	return new Promise((resolvePromise) => {
-		const isWin = process.platform === "win32";
-		const shell = isWin ? "where.exe" : process.env.SHELL || "/bin/zsh";
-		const args = isWin ? ["vir"] : ["-l", "-c", "command -v vir"];
+	if (process.platform === "win32") {
+		return runDetect("where.exe", ["vir"]).then((out) => firstLine(out));
+	}
+	const shell = process.env.SHELL || "/bin/zsh";
+	const probe = `printf '${DETECT_MARKER}%s\\n' "$(command -v vir 2>/dev/null)"`;
+	return runDetect(shell, ["-i", "-l", "-c", probe]).then((out) => {
+		const line = out.split("\n").find((l) => l.includes(DETECT_MARKER));
+		if (!line) return null;
+		const found = line.slice(line.indexOf(DETECT_MARKER) + DETECT_MARKER.length).trim();
+		return found.length > 0 ? found : null;
+	});
+}
 
+function firstLine(out: string): string | null {
+	const line = out
+		.split(/\r?\n/)
+		.map((l) => l.trim())
+		.find((l) => l.length > 0);
+	return line ?? null;
+}
+
+/** Spawn a detection command and resolve with whatever it printed to stdout (empty on failure). */
+function runDetect(cmd: string, args: string[]): Promise<string> {
+	return new Promise((resolvePromise) => {
 		let child: ReturnType<typeof spawn>;
 		try {
-			child = spawn(shell, args);
+			child = spawn(cmd, args);
 		} catch {
-			resolvePromise(null);
+			resolvePromise("");
 			return;
 		}
-
 		let out = "";
 		const timer = setTimeout(() => {
 			child.kill("SIGKILL");
-			resolvePromise(null);
-		}, 5_000);
-
+			resolvePromise(out);
+		}, DETECT_TIMEOUT_MS);
 		child.stdout?.on("data", (c: Buffer) => (out += c.toString()));
 		child.on("error", () => {
 			clearTimeout(timer);
-			resolvePromise(null);
+			resolvePromise("");
 		});
-		child.on("close", (code) => {
+		child.on("close", () => {
 			clearTimeout(timer);
-			const first = out
-				.split("\n")
-				.map((l) => l.trim())
-				.find((l) => l.length > 0);
-			resolvePromise(code === 0 && first ? first : null);
+			resolvePromise(out);
 		});
 	});
 }
