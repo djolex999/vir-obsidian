@@ -12,7 +12,10 @@
       "Bash(npm install *)",
       "Bash(npm ls *)",
       "Bash(git add *)",
-      "Bash(git commit -q -m 'chore: scaffold vir-obsidian plugin \\(config, build, manifest\\) *)"
+      "Bash(git commit -q -m 'chore: scaffold vir-obsidian plugin \\(config, build, manifest\\) *)",
+      "Bash(chmod +x tests/fixtures/*.mjs)",
+      "Bash(npx vitest *)",
+      "Bash(git commit -q -m 'feat: types + tested logic layer \\(IPC client, format, frontmatter, query-text, status\\) *)"
     ]
   }
 }
