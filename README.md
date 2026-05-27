@@ -4,9 +4,7 @@
 
 > [`vir`](https://www.npmjs.com/package/@djolex999/vir-cli) distills your Claude Code sessions into an Obsidian vault of patterns, gotchas, decisions, and tools. This plugin brings that knowledge into Obsidian's sidebar — so the right note finds you while you're writing, not three searches later.
 
-![Vir sidebar showing related distilled notes next to an open note](docs/screenshot.png)
-
-<!-- TODO(v0.1.0): replace docs/screenshot.png with a real capture (sidebar + open note with vir frontmatter) before marketplace submission. -->
+![Vir's Recent tab in the Obsidian sidebar beside an open distilled note showing vir frontmatter](docs/screenshot.png)
 
 ## What it does
 
@@ -51,17 +49,11 @@ A colored dot reflects daemon health, polled on an interval (default 30s):
 - 🔴 **down / unreachable** — daemon not running
 - ⚪ **unknown** — the `vir` CLI couldn't be found (set the path in settings)
 
-![Status bar dot](docs/status-bar.png) <!-- TODO: real screenshot -->
-
 ### Recent tab
 Scans the vault directly (no `vir` call) for notes carrying vir's frontmatter `category` (`pattern` · `gotcha` · `decision` · `tool` · `article`), newest first, with a color-coded badge, project, and relative date. Click to open.
 
-![Recent tab](docs/recent-tab.png) <!-- TODO: real screenshot -->
-
 ### Related tab
 Runs `vir query` against the note you're editing (debounced) and lists the most relevant distilled notes. Results preserve `vir`'s own ranking (it diversifies via MMR — the plugin never re-sorts), filtered by a confidence threshold you control.
-
-![Related tab](docs/related-tab.png) <!-- TODO: real screenshot -->
 
 ## Links
 
