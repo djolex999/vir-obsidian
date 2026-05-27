@@ -19,7 +19,8 @@
       "Bash(npx tsc *)",
       "Bash(echo \"TSC_EXIT=$?\")",
       "Bash(npm run *)",
-      "Bash(git commit -q -m 'feat: plugin UI + entry point \\(settings, sidebar tabs, search modal, status bar\\) *)"
+      "Bash(git commit -q -m 'feat: plugin UI + entry point \\(settings, sidebar tabs, search modal, status bar\\) *)",
+      "Bash(git commit -q -m 'docs: README + tag-triggered release workflow *)"
     ]
   }
 }
