@@ -2,9 +2,11 @@ name: Release Obsidian plugin
 
 on:
   push:
+    # Obsidian requires the release tag to exactly match manifest.json's version — NO "v" prefix.
+    # First char must be a digit so v-prefixed tags never match.
     tags:
-      - "v*.*.*"
-      - "v*.*.*-*"
+      - "[0-9]+.[0-9]+.[0-9]+" # 0.1.0, 1.0.0
+      - "[0-9]+.[0-9]+.[0-9]+-*" # 0.1.0-rc.1 and other prereleases
 
 permissions:
   contents: write
