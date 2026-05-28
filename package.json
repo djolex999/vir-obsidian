@@ -1,7 +1,7 @@
 {
   "name": "vir-obsidian",
-  "version": "0.1.0",
-  "description": "An LLM Wiki for Claude Code, in your Obsidian sidebar.",
+  "version": "0.1.1",
+  "description": "An LLM Wiki for Claude Code, in your vault sidebar.",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
@@ -15,7 +15,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.11.0",
-    "builtin-modules": "^3.3.0",
     "esbuild": "^0.20.0",
     "obsidian": "^1.4.11",
     "tslib": "^2.6.2",
