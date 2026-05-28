@@ -2031,9 +2031,9 @@ git tag v0.1.0 && git push origin v0.1.0
 ```
 Confirm the release has all three assets, not draft, not prerelease.
 
-- [ ] **Step 4: Marketplace submission (manual, starts the 2–4 week clock)**
+- [ ] **Step 4: Marketplace submission (via the portal; starts the review window)**
   - Replace screenshot placeholders with a real screenshot (sidebar + open note with frontmatter).
-  - Fork `obsidianmd/obsidian-releases`, add an entry to `community-plugins.json` pointing to `djolex999/vir-obsidian`, open the PR.
+  - Submit through the **community.obsidian.md portal** — Obsidian migrated plugin submissions off GitHub PRs (~April/May 2026). Create a draft submission entry in the portal pointing at the repo URL `https://github.com/djolex999/vir-obsidian`; the portal runs its own validation + attestation form. The old flow (fork `obsidianmd/obsidian-releases`, edit `community-plugins.json`, open a PR with the checklist template) is deprecated. See [lessons](../../lessons.md).
 
 ---
 
