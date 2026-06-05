@@ -32,6 +32,8 @@ export function categoryColor(category: string): string {
 			return "var(--color-green)";
 		case "article":
 			return "var(--color-orange)";
+		case "topic":
+			return "var(--color-cyan)";
 		default:
 			return "var(--text-muted)";
 	}

@@ -1,6 +1,6 @@
 {
   "name": "vir-obsidian",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An LLM Wiki for Claude Code, in your vault sidebar.",
   "main": "main.js",
   "scripts": {
@@ -10,7 +10,12 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": ["obsidian", "plugin", "vir", "claude"],
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "vir",
+    "claude"
+  ],
   "author": "Djordje Marković",
   "license": "MIT",
   "devDependencies": {

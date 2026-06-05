@@ -11,6 +11,9 @@ describe("isVirCategory", () => {
 		expect(isVirCategory(42)).toBe(false);
 		expect(isVirCategory(undefined)).toBe(false);
 	});
+	it("accepts 'topic' (the compose-loop category)", () => {
+		expect(isVirCategory("topic")).toBe(true);
+	});
 });
 
 describe("extractVirMeta", () => {
@@ -31,5 +34,22 @@ describe("extractVirMeta", () => {
 			project: undefined,
 			date: undefined,
 		});
+	});
+	it("recognizes a topic note by `type: topic` (it carries no `category` field)", () => {
+		const meta = extractVirMeta({
+			type: "topic",
+			title: "Auth Flow Patterns",
+			updated: "2026-05-28",
+			created: "2026-05-20",
+		});
+		expect(meta).not.toBeNull();
+		expect(meta?.category).toBe("topic");
+		// Topics have no `date`; fall back to `updated` so Recent sorts (and keeps) them.
+		expect(meta?.date).toBe("2026-05-28");
+	});
+	it("falls back to `created` for a topic without `updated`", () => {
+		expect(extractVirMeta({ type: "topic", created: "2026-05-20" })?.date).toBe(
+			"2026-05-20",
+		);
 	});
 });

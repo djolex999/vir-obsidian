@@ -31,4 +31,12 @@ describe("categoryColor", () => {
 	it("falls back for unknown", () => {
 		expect(categoryColor("nope")).toBe("var(--text-muted)");
 	});
+	it("gives 'topic' its own distinct, non-muted color", () => {
+		const topic = categoryColor("topic");
+		expect(topic).toBe("var(--color-cyan)");
+		expect(topic).not.toBe("var(--text-muted)");
+		for (const c of ["pattern", "gotcha", "decision", "tool", "article"]) {
+			expect(categoryColor(c)).not.toBe(topic);
+		}
+	});
 });

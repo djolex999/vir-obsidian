@@ -50,10 +50,10 @@ A colored dot reflects daemon health, polled on an interval (default 30s):
 - ⚪ **unknown** — the `vir` CLI couldn't be found (set the path in settings)
 
 ### Recent tab
-Scans the vault directly (no `vir` call) for notes carrying vir's frontmatter `category` (`pattern` · `gotcha` · `decision` · `tool` · `article`), newest first, with a color-coded badge, project, and relative date. Click to open.
+Scans the vault directly (no `vir` call) for notes carrying vir's frontmatter (`pattern` · `gotcha` · `decision` · `tool` · `article` · `topic`), newest first, with a color-coded badge, project, and relative date. Click to open.
 
 ### Related tab
-Runs `vir query` against the note you're editing (debounced) and lists the most relevant distilled notes. Results preserve `vir`'s own ranking (it diversifies via MMR — the plugin never re-sorts), filtered by a confidence threshold you control.
+Runs `vir query` against the note you're editing (debounced) and lists the most relevant distilled notes — including `topic` syntheses from `vir compose`. Results preserve `vir`'s own ranking (it diversifies via MMR — the plugin never re-sorts), filtered by a confidence threshold you control.
 
 ## Links
 
