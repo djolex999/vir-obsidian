@@ -90,7 +90,7 @@ export default class VirPlugin extends Plugin {
 			leaf = workspace.getRightLeaf(false);
 			if (leaf) await leaf.setViewState({ type: VIR_VIEW_TYPE, active: true });
 		}
-		if (leaf) workspace.revealLeaf(leaf);
+		if (leaf) void workspace.revealLeaf(leaf);
 		return leaf;
 	}
 

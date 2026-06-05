@@ -2,6 +2,12 @@ import { describe, it, expect } from "vitest";
 import { resolve } from "path";
 import { VirClient, VirNotFoundError, VirTimeoutError, VirCLIError } from "../src/vir-client";
 
+// vir-client's run() uses window.setTimeout/window.clearTimeout (Obsidian's
+// popout-window timer rule). Vitest runs in Node, which has no `window` — alias it
+// to globalThis so those timer calls resolve. (Obsidian's renderer always has one.)
+const globalWithWindow = globalThis as unknown as { window?: unknown };
+if (!globalWithWindow.window) globalWithWindow.window = globalThis;
+
 const fx = (name: string): string => resolve(__dirname, "fixtures", name);
 
 describe("VirClient", () => {

@@ -9,12 +9,12 @@
 ## What it does
 
 - **Status bar** — a live health dot for the vir daemon (healthy / stale / down / CLI-not-found). Click it to open settings.
-- **Sidebar pane** — a **Recent** tab that scans your vault for vir-distilled notes, and a **Related** tab that queries `vir` for notes relevant to the note you're editing.
+- **Sidebar pane** — a **Recent** tab that scans your vault for vir-distilled notes — patterns, gotchas, decisions, tools, articles, and `vir compose` topic syntheses — and a **Related** tab that queries `vir` for notes relevant to what you're editing. Both surface topic notes alongside the rest, color-coded by category.
 - **Commands** — `Vir: Search vault`, `Vir: Surface related notes`, and `Vir: Open settings` from the command palette.
 
 ## Install
 
-**From the Community Plugins marketplace** *(pending review)*: search for "Vir" in Settings → Community plugins → Browse. _(Link added once approved.)_
+**From the Community Plugins marketplace:** open Settings → Community plugins → Browse, search for **Vir**, and click Install.
 
 **Manual install:**
 
@@ -58,7 +58,7 @@ Runs `vir query` against the note you're editing (debounced) and lists the most 
 ## Links
 
 - **vir CLI** — [`@djolex999/vir-cli` on npm](https://www.npmjs.com/package/@djolex999/vir-cli)
-- **The Compounding Codebase** — the manifesto behind vir _(coming soon at djordje.dev)_
+- **The Compounding Codebase** — the manifesto behind vir.
 
 ## License
 

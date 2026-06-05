@@ -79,7 +79,7 @@ export class VirClient {
 			const finish = (fn: () => void): void => {
 				if (settled) return;
 				settled = true;
-				clearTimeout(timer);
+				window.clearTimeout(timer);
 				fn();
 			};
 
@@ -91,7 +91,7 @@ export class VirClient {
 				: process.env;
 			const child = spawn(this.binaryPath, args, { env });
 
-			const timer = setTimeout(() => {
+			const timer = window.setTimeout(() => {
 				finish(() => {
 					child.kill("SIGKILL");
 					rejectPromise(new VirTimeoutError());
@@ -125,11 +125,13 @@ export class VirClient {
 	}
 
 	private parse<T>(stdout: string): T {
+		let parsed: unknown;
 		try {
-			return JSON.parse(stdout) as T;
+			parsed = JSON.parse(stdout);
 		} catch {
 			throw new VirCLIError("Failed to parse vir JSON output", stdout, 0);
 		}
+		return parsed as T;
 	}
 }
 
@@ -176,17 +178,17 @@ function runDetect(cmd: string, args: string[]): Promise<string> {
 			return;
 		}
 		let out = "";
-		const timer = setTimeout(() => {
+		const timer = window.setTimeout(() => {
 			child.kill("SIGKILL");
 			resolvePromise(out);
 		}, DETECT_TIMEOUT_MS);
 		child.stdout?.on("data", (c: Buffer) => (out += c.toString()));
 		child.on("error", () => {
-			clearTimeout(timer);
+			window.clearTimeout(timer);
 			resolvePromise("");
 		});
 		child.on("close", () => {
-			clearTimeout(timer);
+			window.clearTimeout(timer);
 			resolvePromise(out);
 		});
 	});
