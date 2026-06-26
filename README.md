@@ -9,7 +9,7 @@
 ## What it does
 
 - **Status bar** — a live health dot for the vir daemon (healthy / stale / down / CLI-not-found). Click it to open settings.
-- **Sidebar pane** — a **Recent** tab that scans your vault for vir-distilled notes — patterns, gotchas, decisions, tools, articles, and `vir compose` topic syntheses — and a **Related** tab that queries `vir` for notes relevant to what you're editing. Both surface topic notes alongside the rest, color-coded by category.
+- **Sidebar pane** — a **Recent** tab that scans your vault for vir-distilled notes — patterns, gotchas, decisions, tools, articles, distilled PDFs/papers, and `vir compose` topic syntheses — and a **Related** tab that queries `vir` for notes relevant to what you're editing. Both surface topic notes alongside the rest, color-coded by category.
 - **Commands** — `Vir: Search vault`, `Vir: Surface related notes`, and `Vir: Open settings` from the command palette.
 
 ## Install
@@ -50,7 +50,7 @@ A colored dot reflects daemon health, polled on an interval (default 30s):
 - ⚪ **unknown** — the `vir` CLI couldn't be found (set the path in settings)
 
 ### Recent tab
-Scans the vault directly (no `vir` call) for notes carrying vir's frontmatter (`pattern` · `gotcha` · `decision` · `tool` · `article` · `topic`), newest first, with a color-coded badge, project, and relative date. Click to open.
+Scans the vault directly (no `vir` call) for notes carrying vir's frontmatter (`pattern` · `gotcha` · `decision` · `tool` · `article` · `topic` · `pdf`), newest first, with a color-coded badge, project, and relative date. Click to open.
 
 ### Related tab
 Runs `vir query` against the note you're editing (debounced) and lists the most relevant distilled notes — including `topic` syntheses from `vir compose`. Results preserve `vir`'s own ranking (it diversifies via MMR — the plugin never re-sorts), filtered by a confidence threshold you control.

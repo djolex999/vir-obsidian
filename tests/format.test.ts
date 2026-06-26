@@ -39,4 +39,12 @@ describe("categoryColor", () => {
 			expect(categoryColor(c)).not.toBe(topic);
 		}
 	});
+	it("gives 'pdf' its own distinct, non-muted color (sibling of article — not the same)", () => {
+		const pdf = categoryColor("pdf");
+		expect(pdf).not.toBe("var(--text-muted)");
+		expect(pdf).not.toBe(categoryColor("article"));
+		for (const c of ["pattern", "gotcha", "decision", "tool", "article", "topic"]) {
+			expect(categoryColor(c)).not.toBe(pdf);
+		}
+	});
 });

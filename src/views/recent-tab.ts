@@ -8,6 +8,7 @@ interface RecentRow {
 	category: string;
 	project?: string;
 	date?: string;
+	title?: string;
 }
 
 export class RecentTab {
@@ -25,9 +26,11 @@ export class RecentTab {
 			return;
 		}
 
-		for (const { file, date, category, project } of notes) {
+		for (const { file, date, category, project, title } of notes) {
 			renderResultRow(container, {
-				title: file.basename,
+				// Real title from frontmatter (source_title/title/topic); the basename
+				// slug is the fallback for notes without one.
+				title: title ?? file.basename,
 				category,
 				project,
 				date,
@@ -42,7 +45,13 @@ export class RecentTab {
 			const fm = this.app.metadataCache.getFileCache(file)?.frontmatter;
 			const meta = extractVirMeta(fm);
 			if (!meta) continue;
-			rows.push({ file, category: meta.category, project: meta.project, date: meta.date });
+			rows.push({
+				file,
+				category: meta.category,
+				project: meta.project,
+				date: meta.date,
+				title: meta.title,
+			});
 		}
 		rows.sort((a, b) => (Date.parse(b.date ?? "") || 0) - (Date.parse(a.date ?? "") || 0));
 		return rows.slice(0, this.plugin.settings.recentCount);

@@ -1,4 +1,11 @@
-export type VirCategory = "pattern" | "gotcha" | "decision" | "tool" | "article" | "topic";
+export type VirCategory =
+	| "pattern"
+	| "gotcha"
+	| "decision"
+	| "tool"
+	| "article"
+	| "topic"
+	| "pdf";
 
 export type DaemonState = "ok" | "stale" | "down";
 

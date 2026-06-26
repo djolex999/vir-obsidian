@@ -3,6 +3,7 @@ import type VirPlugin from "../main";
 import type { VirQueryResult } from "../types";
 import { VirNotFoundError } from "../vir-client";
 import { buildQueryText } from "../lib/query-text";
+import { titleFromFrontmatter } from "../lib/frontmatter";
 import { renderResultRow, renderEmptyState } from "./result-row";
 import { openPluginSettings } from "../lib/app-setting";
 
@@ -90,7 +91,7 @@ export class RelatedTab {
 
 		for (const r of filtered) {
 			renderResultRow(container, {
-				title: titleFromPath(r.path),
+				title: this.titleForPath(r.path),
 				category: r.category,
 				project: r.project,
 				date: r.date,
@@ -98,6 +99,19 @@ export class RelatedTab {
 				onClick: () => this.openByPath(r.path),
 			});
 		}
+	}
+
+	// The wire result carries no title, so read the note's real title
+	// (source_title/title/topic) from frontmatter; the basename slug is the
+	// fallback for notes outside the vault or without a title field.
+	private titleForPath(path: string): string {
+		const file = this.app.vault.getAbstractFileByPath(path);
+		if (file instanceof TFile) {
+			const fm = this.app.metadataCache.getFileCache(file)?.frontmatter;
+			const title = titleFromFrontmatter(fm);
+			if (title) return title;
+		}
+		return titleFromPath(path);
 	}
 
 	private openByPath(path: string): void {

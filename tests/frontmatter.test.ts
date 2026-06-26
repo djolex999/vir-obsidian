@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { isVirCategory, extractVirMeta } from "../src/lib/frontmatter";
+import {
+	isVirCategory,
+	extractVirMeta,
+	titleFromFrontmatter,
+} from "../src/lib/frontmatter";
 
 describe("isVirCategory", () => {
 	it("accepts known categories", () => {
@@ -13,6 +17,9 @@ describe("isVirCategory", () => {
 	});
 	it("accepts 'topic' (the compose-loop category)", () => {
 		expect(isVirCategory("topic")).toBe(true);
+	});
+	it("accepts 'pdf' (the PDF-ingestion category)", () => {
+		expect(isVirCategory("pdf")).toBe(true);
 	});
 });
 
@@ -51,5 +58,54 @@ describe("extractVirMeta", () => {
 		expect(extractVirMeta({ type: "topic", created: "2026-05-20" })?.date).toBe(
 			"2026-05-20",
 		);
+	});
+	it("recognizes a pdf note by `type: pdf` (its `category` is the sub-taxonomy)", () => {
+		const meta = extractVirMeta({
+			type: "pdf",
+			category: "paper", // sub-taxonomy, NOT a wire category
+			source_title: "Vibe-driven model-based engineering",
+			distilled_at: "2026-06-26T10:34:24.078Z",
+		});
+		expect(meta).not.toBeNull();
+		expect(meta?.category).toBe("pdf");
+		// PDFs have no `date`/`updated`/`created` — fall back to `distilled_at` so
+		// they sort (and survive the Recent slice) instead of sinking to epoch 0.
+		expect(meta?.date).toBe("2026-06-26T10:34:24.078Z");
+		expect(meta?.title).toBe("Vibe-driven model-based engineering");
+	});
+	it("recognizes an article note by `type: article` (the latent twin of the pdf bug)", () => {
+		const meta = extractVirMeta({
+			type: "article",
+			category: "concept", // sub-taxonomy, NOT a wire category
+			source_title: "The Compounding Codebase",
+			distilled_at: "2026-05-22T00:00:00.000Z",
+		});
+		expect(meta?.category).toBe("article");
+		expect(meta?.date).toBe("2026-05-22T00:00:00.000Z");
+		expect(meta?.title).toBe("The Compounding Codebase");
+	});
+	it("surfaces a session note's `topic` as its title", () => {
+		expect(
+			extractVirMeta({ category: "gotcha", topic: "kie 200 body error" })?.title,
+		).toBe("kie 200 body error");
+	});
+});
+
+describe("titleFromFrontmatter", () => {
+	it("prefers source_title (pdf/article)", () => {
+		expect(titleFromFrontmatter({ source_title: "A Paper", title: "x" })).toBe("A Paper");
+	});
+	it("uses title for topics", () => {
+		expect(titleFromFrontmatter({ type: "topic", title: "Auth Flow" })).toBe("Auth Flow");
+	});
+	it("uses topic for sessions", () => {
+		expect(titleFromFrontmatter({ category: "gotcha", topic: "some lesson" })).toBe(
+			"some lesson",
+		);
+	});
+	it("returns undefined when no title-ish field is present or non-string", () => {
+		expect(titleFromFrontmatter({ category: "tool" })).toBeUndefined();
+		expect(titleFromFrontmatter({ source_title: 5 })).toBeUndefined();
+		expect(titleFromFrontmatter(null)).toBeUndefined();
 	});
 });
