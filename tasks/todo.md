@@ -30,18 +30,26 @@ informational, NOT failures; left untouched). Fixed all 5 lint/type failures:
 - [x] **Gotcha:** `window.setTimeout` broke the Node test env (`window is not defined`) → shimmed `window ??= globalThis` in `tests/vir-client.test.ts`. Build clean, **32 vitest cases** green.
 - [x] Released via **tag-push → `release.yml`** (NOT `gh release create` — avoids the 0.1.2 double-fire). `package-lock.json` committed so the action's `npm ci` stays in sync.
 
+## v0.2.0 (shipped — pdf first-class, the plugin half of the CLI's PDF ingestion)
+The CLI emitted `pdf` notes (vir-cli 0.11.0+) that the plugin only rendered as a muted fallback. Made `pdf` first-class, mirroring the 0.1.2 topic work. **32 → 41 vitest cases.** Tag `0.2.0` (bare-semver) on remote; `release.yml` auto-published the GitHub release (main.js + manifest.json + styles.css); marketplace shows 0.2.0.
+- [x] `pdf` added to `VirCategory` union + `VIR_CATEGORIES`/`isVirCategory`; `categoryColor("pdf")` → `var(--color-pink)` (distinct from article's orange).
+- [x] **Recent-scan fix (the real bug):** `extractVirMeta` now maps `type:pdf`/`type:article` → category — their `category` frontmatter is a SUB-taxonomy (`paper`/`concept`), so `isVirCategory` rejected it → the note was dropped from Recent entirely. This also fixed the **latent article-in-Recent drop** (no article notes existed to expose it). Added `distilled_at` to the date fallback chain so dateless source notes don't sink below the `recentCount` slice (the topic-bug class).
+- [x] **Real titles, not slugs:** new `titleFromFrontmatter` (`source_title`/`title`/`topic`); both panes render the real title (the wire carries no title field). Per the chosen option, this improved ALL categories, not just pdf.
+- [x] Verified: `vir --version` = 0.11.1 on PATH; `vir query --json` returns the Cabot note as `category:"pdf"`; real-note logic test; build clean; **41/41 tests**. Live in Obsidian: Cabot note renders pink `pdf` badge + real title in Recent + Related.
+
 ## In progress / next
-- [ ] Confirm the `0.1.3` `release.yml` run went green + the portal re-validates (Risk + 5 warnings cleared).
-- [ ] **Clean up the failed `release.yml` run for 0.1.2** (run `27017762251`) — cosmetic red X from the old double-fire.
-- [ ] Portal: confirm community.obsidian.md re-validates against 0.1.3; monitor the review window.
+- [x] ~~Confirm the `0.1.3` `release.yml` run + portal re-validate.~~ Long done; 0.2.0 has since shipped via the same tag-push → `release.yml` mechanism cleanly.
+- [ ] Portal/marketplace: confirm the listing reflects 0.2.0 (auto-detect from the release); monitor any re-validation.
+- [ ] **Clean up old failed/stale CI runs** (the 0.1.2 double-fire run `27017762251`) — cosmetic.
 
 ## Backlog
-- [ ] **OVERDUE — bump GH Actions `checkout@v4` + `setup-node@v4` → `@v5`** (was due **2026-06-02**; today is 2026-06-05). The 0.1.2 run still executed (it failed on "release exists", not the Node-20 deprecation) — on borrowed time.
+- [ ] **STILL OVERDUE — bump GH Actions `checkout@v4` + `setup-node@v4` → `@v5`** (was due 2026-06-02). The 0.2.0 `release.yml` run still succeeded, so the actions aren't broken yet — but the Node-20 deprecation is on borrowed time. Bump on the next release touch.
+- [ ] **Add GitHub artifact attestations to `release.yml`** (`actions/attest-build-provenance`) for the release assets — the community-portal validation flagged missing attestations as an informational recommendation (not a blocker). Adds supply-chain provenance for `main.js`/`manifest.json`/`styles.css`. Someday, not urgent.
 - [x] **Release mechanism decided: tag-push → `release.yml`** (NOT `gh release create`). 0.1.3 used it cleanly; codified in CLAUDE.md. `gh release create` is what double-fired 0.1.2.
 - [ ] Swap placeholder out-links once live: marketplace link in README; "The Compounding Codebase" manifesto at djordje.dev
 - [ ] (Optional cleanup) delete stale `0.1.0` release + `v0.1.0-rc.1` prerelease once a later version is accepted
 
 ## Roadmap (v0.2.0+)
 - [ ] **Topics tab** — proposed in the 0.1.2 pass, deferred as not-cheap (a 3rd `TabId` + a `TopicsTab` view class + `sidebar-view.ts` wiring). A dedicated browse-all-`type: topic` surface, optionally a "Compose new topic" action shelling `vir compose`. Topics already surface in Related + Recent, so this is additive, not required.
-- [ ] **Shared wire-type source** with vir-cli — `src/types.ts` `VirQueryResult` duplicates (and has drifted from) vir-cli's `src/output/json.ts`: plugin `project?`/`date?` vs CLI `project: string|null`/`date: string`. A published shared types package stops the next drift. Cross-repo decision; both kept local for now.
+- [ ] **Shared wire-type source** with vir-cli — `src/types.ts` `VirQueryResult` is hand-mirrored from vir-cli's `src/output/json.ts` (no shared package). The **category set is realigned as of 0.2.0** (plugin added `pdf` to match the CLI); remaining drift is nullability: plugin `project?`/`date?` vs CLI `project: string\|null`/`date: string` (runtime-safe per the audit), and `VirOllamaStatus.model: string` vs CLI `string \| null` (json.ts — NOT render-safe on null; fix pending). A published shared types package would stop the next category-drift. Cross-repo decision; both kept local for now.
 - [ ] Phase 2 (post-approval): Canvas, daily notes, templates, transcript browsing, inline editor enhancements

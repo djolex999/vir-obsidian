@@ -11,6 +11,15 @@ Obsidian plugin for **vir** (`@djolex999/vir-cli`). MIT. Separate repo from `vir
 6. Filter Related/Search by `confidence` (default 0.7), never by `score`.
 7. isDesktopOnly: true. Mobile -> placeholder view only, no spawns/intervals.
 
+## Category parity with the CLI
+The CLI owns the category set; the plugin hand-mirrors it (no shared package — currently aligned through `pdf`). Supported: `pattern` `gotcha` `decision` `tool` `article` `topic` `pdf`. Adding a new category the CLI emits is a multi-step sweep, not one line:
+1. `src/types.ts` `VirCategory` union + `src/lib/frontmatter.ts` `VIR_CATEGORIES`/`isVirCategory`.
+2. `src/lib/format.ts` `categoryColor` — a distinct, non-muted color.
+3. `extractVirMeta` — **source-typed notes (topic/article/pdf) classify by their `type` discriminator, NOT `category`** (their `category` is absent or a sub-taxonomy like `paper`/`concept`). Add the `type → category` mapping or the note is dropped from the Recent scan.
+4. Date: source notes have no `date:` — fall back through `updated`/`created`/`distilled_at`, or the dateless note sinks below the Recent `recentCount` slice.
+5. Title: the wire carries no title field; read `source_title`/`title`/`topic` from frontmatter (`titleFromFrontmatter`) so it isn't a filename slug.
+Verify the whole consumer path (classify → date-sort/slice → title), not just the union — see `tasks/lessons.md` 2026-06-26.
+
 ## Pure logic lives in src/lib/ (vitest-tested). UI verified manually in a sandbox vault.
 ## Binary resolution goes through an *interactive* login shell (`-i -l -c`) so nvm/asdf init in ~/.zshrc resolves; spawning vir prepends `dirname(binaryPath)` to PATH so its node shebang finds node.
 

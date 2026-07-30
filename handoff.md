@@ -1,57 +1,62 @@
 # Handoff
 
-State as of **2026-06-05**. Plugin at **0.1.3**, **minAppVersion 1.7.2**.
-Releasing via the INTENDED mechanism this time — push a bare-semver tag →
-`release.yml` builds `main.js` + creates the GitHub release. **32 vitest cases**
-green, `npm run build` clean.
+State as of **2026-06-26**. Plugin at **0.2.0**, minAppVersion 1.7.2. **41 vitest
+cases** green, `npm run build` clean. Tag `0.2.0` (bare-semver) on remote;
+`release.yml` auto-published the GitHub release (main.js + manifest.json +
+styles.css); marketplace auto-detects. Vault's installed copy updated 0.1.0 →
+0.2.0 (data.json untouched).
 
 ## Where we left off
-Fixed the **5 lint/type failures** the community-portal validation flagged on
-0.1.2 (the other findings — child_process, vault enumeration, malware scan,
-attestations — are informational disclosures, left untouched):
 
-1. **`obsidianmd/no-unsupported-api`** (4 sites) → bumped `minAppVersion` 1.4.0 →
-   **1.7.2**. Driven by `workspace.revealLeaf` (`@since 1.7.2` — that's when it
-   started returning `Promise<void>`); `setTooltip` is `@since 1.4.4` (3 sites).
-   `revealLeaf` has no older equivalent that reveals/expands a collapsed sidebar,
-   so bump, not swap. Added `0.1.3 → 1.7.2` to versions.json.
-2. **Popout timer rule** — `setTimeout`/`clearTimeout` → `window.*` (5 sites in
-   `vir-client.ts`).
-3. **Floating promise** — `main.ts:93` `void workspace.revealLeaf(leaf)` (it now
-   returns a Promise — same line as finding #1).
-4. **`no-unsafe-assignment`** — `VirClient.parse<T>` routes `JSON.parse` through
-   `: unknown` then asserts `as T` (the codebase's existing safe pattern).
-5. **README placeholders** — filled the `(pending review)` / `(coming soon)` bits;
-   the overview now names topic syntheses surfacing in Related + Recent.
+Shipped **0.2.0 — `pdf` as a first-class category**, the plugin half of the CLI's
+PDF ingestion (vir-cli 0.11.0+ emits `pdf` notes; the plugin had been rendering
+them as a muted fallback). Mirrored the 0.1.2 topic work:
 
-**Gotcha that bit:** `window.setTimeout` made the Node test env throw `window is
-not defined` (vitest runs in Node, no `window`). Shimmed it in
-`tests/vir-client.test.ts` (`window ??= globalThis`); production stays
-rule-compliant.
+- `pdf` in the `VirCategory` union + `isVirCategory`; a distinct **pink** badge
+  (`categoryColor`) — sibling of article's orange, not a reuse.
+- **The real bug:** `extractVirMeta` only mapped `type:topic`. For pdf/article
+  the `category:` frontmatter is a SUB-taxonomy (`paper`/`concept`), so
+  `isVirCategory` rejected it and the note was **dropped from Recent entirely**.
+  Now maps `type:pdf`/`type:article` → category (also fixed the latent
+  article-in-Recent drop) + added `distilled_at` to the date chain so dateless
+  source notes don't sink below the `recentCount` slice.
+- **Real titles:** the wire has no title field, so both panes used to show the
+  filename slug. New `titleFromFrontmatter` (`source_title`/`title`/`topic`) makes
+  every category render its real title.
+
+Verified live in Obsidian against the real ingested Cabot note (`pdf` badge =
+pink, title = "Vibe-driven model-based engineering", appears in Recent).
 
 ## In flight
-- **`release.yml` run for the `0.1.3` tag** — monitor it goes green. This time we
-  push ONLY the tag (no local `gh release create`), so it won't double-fire like
-  0.1.2 did.
-- `package-lock.json` **is** committed this release (the action's `npm ci` needs it
-  in sync with the 0.1.3 `package.json`).
+
+- Nothing started-but-unfinished. Working tree clean; tag + release on remote.
 
 ## Blockers
-- Portal review window (community.obsidian.md) — external, 2–4 weeks.
+
+- None blocking the plugin. (The marketplace portal review window is external,
+  but 0.2.0 ships through the auto-detect-on-release path — no re-submission.)
 
 ## Next session: start here
-1. Confirm the `0.1.3` `release.yml` run succeeded + the portal re-validates
-   (all 5 warnings + the Risk cleared).
-2. **OVERDUE: bump GH Actions `@v4` → `@v5`** (`checkout`, `setup-node`).
-3. Clean up the old **failed 0.1.2 `release.yml` run** (`27017762251`) — cosmetic.
-4. v0.2.0 idea: a dedicated **Topics tab** (see `tasks/todo.md` → Roadmap).
 
-## Changed this session (0.1.3)
+1. **Bump GH Actions `checkout@v4` + `setup-node@v4` → `@v5`** (overdue since
+   2026-06-02 — the Node-20 deprecation is on borrowed time; `release.yml` still
+   ran for 0.2.0, so not broken yet). Do it on the next release touch.
+2. Confirm the marketplace listing reflects 0.2.0; optionally add
+   `actions/attest-build-provenance` to `release.yml` (portal recommended it).
+3. **Standing roadmap:** the Topics tab (still deferred — 0.2.0 was pdf parity,
+   not the tab) and the shared wire-type package with vir-cli (category set is
+   realigned post-pdf; still hand-mirrored, leave local for now).
+
+## Changed this session (0.2.0)
+
 ```
-src/vir-client.ts          window.setTimeout/clearTimeout (×5); parse<T> via unknown
-src/main.ts                void workspace.revealLeaf(leaf)
-tests/vir-client.test.ts   window→globalThis shim (Node test env)
-README.md                  filled placeholders; topics in the overview
-manifest.json              minAppVersion 1.4.0 → 1.7.2; version → 0.1.3
-package.json / package-lock.json / versions.json   → 0.1.3 (versions: 0.1.3→1.7.2)
+src/types.ts                 pdf in VirCategory union
+src/lib/frontmatter.ts       pdf in VIR_CATEGORIES; type:pdf/article mapping;
+                             distilled_at in date chain; titleFromFrontmatter + title in meta
+src/lib/format.ts            categoryColor "pdf" → --color-pink
+src/views/recent-tab.ts      render meta.title ?? basename
+src/views/related-tab.ts     titleForPath via metadataCache frontmatter lookup
+tests/frontmatter.test.ts    +pdf/article classification, distilled_at, title
+tests/format.test.ts         +pdf color
+README / manifest / versions  pdf in enumerations; 0.1.3 → 0.2.0
 ```
