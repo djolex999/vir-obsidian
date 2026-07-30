@@ -132,7 +132,13 @@ export class VirSettingTab extends PluginSettingTab {
 					btn.setDisabled(true).setButtonText("Testing…");
 					try {
 						const d = await this.plugin.client.doctor();
-						new Notice(`Vir ${d.version}: daemon ${d.daemon}, vault ${d.vaultPath}`);
+						const ollama =
+							d.ollama.model === null
+								? "Ollama unreachable"
+								: `Ollama ${d.ollama.model}`;
+						new Notice(
+							`Vir ${d.version}: daemon ${d.daemon}, ${ollama}, vault ${d.vaultPath}`,
+						);
 					} catch (err) {
 						new Notice(`Vir: ${err instanceof Error ? err.message : String(err)}`);
 					} finally {

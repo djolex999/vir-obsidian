@@ -21,7 +21,8 @@ export interface VirQueryResult {
 
 export interface VirOllamaStatus {
 	reachable: boolean;
-	model: string;
+	/** null when Ollama is unreachable (mirrors vir-cli output/json.ts). */
+	model: string | null;
 }
 
 export interface VirDoctorResult {

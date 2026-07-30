@@ -1,0 +1,13 @@
+{
+  "daemon": "down",
+  "lastPollAt": null,
+  "lastDistillAt": "2026-07-12T14:45:55.004Z",
+  "dbSizeMb": 7.3,
+  "vaultPath": "/Users/djmarkovic999/Documents/Vir",
+  "configValid": true,
+  "ollama": {
+    "reachable": false,
+    "model": null
+  },
+  "version": "0.12.0"
+}
