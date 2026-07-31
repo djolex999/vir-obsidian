@@ -21,7 +21,11 @@ export interface VirQueryResult {
 
 export interface VirOllamaStatus {
 	reachable: boolean;
-	/** null when Ollama is unreachable (mirrors vir-cli output/json.ts). */
+	/**
+	 * Embed-probe result, not a reachability echo (vir-cli ≥ 0.14.0): the model
+	 * id when a one-shot embed succeeded, null on unreachable OR probe failure —
+	 * so {reachable: true, model: null} is a legal state. Branch on `reachable`.
+	 */
 	model: string | null;
 }
 

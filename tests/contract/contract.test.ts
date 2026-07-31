@@ -20,24 +20,44 @@ function kind(v: unknown): string {
 	return typeof v;
 }
 
+function expectDoctorShape(d: Record<string, unknown>): void {
+	expect(["ok", "stale", "down"]).toContain(d.daemon);
+	expect(["string", "null"]).toContain(kind(d.lastPollAt));
+	expect(["string", "null"]).toContain(kind(d.lastDistillAt));
+	expect(kind(d.dbSizeMb)).toBe("number");
+	expect(kind(d.vaultPath)).toBe("string");
+	expect(kind(d.configValid)).toBe("boolean");
+	expect(kind(d.version)).toBe("string");
+	const ollama = d.ollama as Record<string, unknown>;
+	expect(kind(ollama.reachable)).toBe("boolean");
+	expect(["string", "null"]).toContain(kind(ollama.model));
+	if (ollama.reachable === false) expect(ollama.model).toBeNull();
+}
+
 describe("vir doctor --json contract (fixture: doctor-ollama-down.json)", () => {
 	const d = load("doctor-ollama-down.json") as Record<string, unknown>;
-	const ollama = d.ollama as Record<string, unknown>;
 
-	it("matches VirDoctorResult", () => {
-		expect(["ok", "stale", "down"]).toContain(d.daemon);
-		expect(["string", "null"]).toContain(kind(d.lastPollAt));
-		expect(["string", "null"]).toContain(kind(d.lastDistillAt));
-		expect(kind(d.dbSizeMb)).toBe("number");
-		expect(kind(d.vaultPath)).toBe("string");
-		expect(kind(d.configValid)).toBe("boolean");
-		expect(kind(d.version)).toBe("string");
+	it("matches VirDoctorResult + VirOllamaStatus", () => {
+		expectDoctorShape(d);
 	});
 
-	it("matches VirOllamaStatus", () => {
-		expect(kind(ollama.reachable)).toBe("boolean");
-		expect(["string", "null"]).toContain(kind(ollama.model));
-		if (ollama.reachable === false) expect(ollama.model).toBeNull();
+	it("pins the unreachable state", () => {
+		expect(d.ollama).toEqual({ reachable: false, model: null });
+	});
+});
+
+// Since vir-cli 0.14.0 `model` is an embed-probe result, so reachable-but-null
+// is a legal wire state (Ollama up, embed model deleted/broken). This fixture
+// exists so no render site ever again infers reachability from `model`.
+describe("vir doctor --json contract (fixture: doctor-ollama-probe-failed.json)", () => {
+	const d = load("doctor-ollama-probe-failed.json") as Record<string, unknown>;
+
+	it("matches VirDoctorResult + VirOllamaStatus", () => {
+		expectDoctorShape(d);
+	});
+
+	it("pins the reachable-but-probe-failed state", () => {
+		expect(d.ollama).toEqual({ reachable: true, model: null });
 	});
 });
 

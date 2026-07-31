@@ -1,6 +1,7 @@
 import { App, PluginSettingTab, Setting, Notice } from "obsidian";
 import type VirPlugin from "./main";
 import { detectVirBinary } from "./vir-client";
+import { ollamaSummary } from "./lib/status";
 
 export interface VirSettings {
 	binaryPath: string;
@@ -132,12 +133,8 @@ export class VirSettingTab extends PluginSettingTab {
 					btn.setDisabled(true).setButtonText("Testing…");
 					try {
 						const d = await this.plugin.client.doctor();
-						const ollama =
-							d.ollama.model === null
-								? "Ollama unreachable"
-								: `Ollama ${d.ollama.model}`;
 						new Notice(
-							`Vir ${d.version}: daemon ${d.daemon}, ${ollama}, vault ${d.vaultPath}`,
+							`Vir ${d.version}: daemon ${d.daemon}, ${ollamaSummary(d.ollama)}, vault ${d.vaultPath}`,
 						);
 					} catch (err) {
 						new Notice(`Vir: ${err instanceof Error ? err.message : String(err)}`);

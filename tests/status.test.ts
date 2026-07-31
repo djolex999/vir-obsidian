@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolveDaemonStatus } from "../src/lib/status";
+import { resolveDaemonStatus, ollamaSummary } from "../src/lib/status";
 import { VirNotFoundError, VirTimeoutError, VirCLIError } from "../src/vir-client";
 import type { VirDoctorResult } from "../src/types";
 
@@ -49,5 +49,23 @@ describe("resolveDaemonStatus", () => {
 			cls: "is-down",
 			tooltip: "Vir: daemon unreachable",
 		});
+	});
+});
+
+// Three wire states since vir-cli 0.14.0: model is a live embed-probe result,
+// so {reachable: true, model: null} is legal (daemon up, embed model broken).
+describe("ollamaSummary", () => {
+	it("unreachable -> unreachable", () => {
+		expect(ollamaSummary({ reachable: false, model: null })).toBe("Ollama unreachable");
+	});
+	it("reachable but probe failed -> says what to check", () => {
+		expect(ollamaSummary({ reachable: true, model: null })).toBe(
+			"Ollama reachable but embed probe failed — check `ollama list` for nomic-embed-text",
+		);
+	});
+	it("ok -> model id", () => {
+		expect(ollamaSummary({ reachable: true, model: "nomic-embed-text" })).toBe(
+			"Ollama nomic-embed-text",
+		);
 	});
 });
