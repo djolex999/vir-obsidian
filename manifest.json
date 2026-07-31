@@ -1,7 +1,7 @@
 {
 	"id": "vir",
 	"name": "Vir",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"minAppVersion": "1.7.2",
 	"description": "An LLM Wiki for Claude Code, in your vault sidebar. Surface relevant notes from your distilled session knowledge as you work.",
 	"author": "Djordje Marković",

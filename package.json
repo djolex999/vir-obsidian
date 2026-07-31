@@ -1,6 +1,6 @@
 {
   "name": "vir-obsidian",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "An LLM Wiki for Claude Code, in your vault sidebar.",
   "main": "main.js",
   "scripts": {
