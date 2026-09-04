@@ -1,10 +1,11 @@
-import { Plugin, Platform, WorkspaceLeaf, ItemView } from "obsidian";
+import { Plugin, Platform, WorkspaceLeaf, ItemView, addIcon } from "obsidian";
 import { VirSettings, DEFAULT_SETTINGS, VirSettingTab } from "./settings";
 import { VirClient, detectVirBinary } from "./vir-client";
 import { VirStatusBar } from "./status-bar";
 import { VIR_VIEW_TYPE, VirSidebarView } from "./views/sidebar-view";
 import { VirSearchModal } from "./modals/search-modal";
 import { openPluginSettings } from "./lib/app-setting";
+import { VIR_ICON_ID, VIR_ICON_SVG } from "./icon";
 
 export default class VirPlugin extends Plugin {
 	settings!: VirSettings;
@@ -13,6 +14,7 @@ export default class VirPlugin extends Plugin {
 
 	async onload(): Promise<void> {
 		await this.loadSettings();
+		addIcon(VIR_ICON_ID, VIR_ICON_SVG);
 
 		if (Platform.isMobile) {
 			this.registerMobilePlaceholder();
@@ -34,7 +36,7 @@ export default class VirPlugin extends Plugin {
 
 		this.registerView(VIR_VIEW_TYPE, (leaf) => new VirSidebarView(leaf, this));
 
-		this.addRibbonIcon("brain-circuit", "Vir: open sidebar", () => void this.activateView());
+		this.addRibbonIcon(VIR_ICON_ID, "Vir: open sidebar", () => void this.activateView());
 
 		this.statusBar = new VirStatusBar(this);
 		this.statusBar.start();
@@ -60,7 +62,7 @@ export default class VirPlugin extends Plugin {
 
 	private registerMobilePlaceholder(): void {
 		this.registerView(VIR_VIEW_TYPE, (leaf) => new MobilePlaceholderView(leaf));
-		this.addRibbonIcon("brain-circuit", "Vir", () => void this.activateView());
+		this.addRibbonIcon(VIR_ICON_ID, "Vir", () => void this.activateView());
 	}
 
 	async loadSettings(): Promise<void> {
@@ -112,7 +114,7 @@ class MobilePlaceholderView extends ItemView {
 		return "Vir";
 	}
 	getIcon(): string {
-		return "brain-circuit";
+		return VIR_ICON_ID;
 	}
 	async onOpen(): Promise<void> {
 		this.contentEl.empty();
