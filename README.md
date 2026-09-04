@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/vir_vortex.svg" width="120" height="120" alt="vir logo"></p>
+
 # Vir for Obsidian
 
 **An LLM Wiki for Claude Code, in your Obsidian sidebar.** Surface relevant notes from your distilled session knowledge as you work.

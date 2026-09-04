@@ -1,4 +1,5 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
+import { VIR_ICON_ID } from "../icon";
 import type VirPlugin from "../main";
 import { RecentTab } from "./recent-tab";
 import { RelatedTab } from "./related-tab";
@@ -32,7 +33,7 @@ export class VirSidebarView extends ItemView {
 		return "Vir";
 	}
 	getIcon(): string {
-		return "brain-circuit";
+		return VIR_ICON_ID;
 	}
 
 	async onOpen(): Promise<void> {
