@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/vir_vortex.svg" width="120" height="120" alt="vir logo"></p>
+<p align="center"><img src="docs/vir_graph_spiral.svg" width="120" height="120" alt="vir logo"></p>
 
 # Vir for Obsidian
 
