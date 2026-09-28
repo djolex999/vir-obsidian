@@ -6,10 +6,16 @@ import { VIR_VIEW_TYPE, VirSidebarView } from "./views/sidebar-view";
 import { VirSearchModal } from "./modals/search-modal";
 import { openPluginSettings } from "./lib/app-setting";
 import { VIR_ICON_ID, VIR_ICON_SVG } from "./icon";
+import { ReviewStore } from "./review-store";
+import { ReviewController } from "./review-controller";
+import { isAtLeast, REVIEW_MIN_CLI } from "./lib/review-queue";
 
 export default class VirPlugin extends Plugin {
 	settings!: VirSettings;
 	client!: VirClient;
+	reviewStore!: ReviewStore;
+	review!: ReviewController;
+	cliVersion: string | null = null;
 	private statusBar: VirStatusBar | null = null;
 
 	async onload(): Promise<void> {
@@ -22,6 +28,9 @@ export default class VirPlugin extends Plugin {
 		}
 
 		this.client = new VirClient(this.settings.binaryPath);
+		// Getter, not a captured client: refreshClient() swaps this.client.
+		this.reviewStore = new ReviewStore(() => this.client);
+		this.review = new ReviewController(this.app, this.reviewStore);
 
 		// Best-effort one-time auto-detect if the path is still the bare default.
 		if (this.settings.binaryPath === "vir") {
@@ -58,6 +67,43 @@ export default class VirPlugin extends Plugin {
 			name: "Open settings",
 			callback: () => this.openSettings(),
 		});
+		this.addCommand({
+			id: "approve-current-note",
+			name: "Approve current note",
+			checkCallback: (checking) => {
+				const file = this.app.workspace.getActiveFile();
+				if (!this.review.isReviewable(file)) return false;
+				if (!checking) void this.review.approve(file);
+				return true;
+			},
+		});
+		this.addCommand({
+			id: "reject-current-note",
+			name: "Reject current note",
+			checkCallback: (checking) => {
+				const file = this.app.workspace.getActiveFile();
+				if (!this.review.isReviewable(file)) return false;
+				if (!checking) void this.review.reject(file);
+				return true;
+			},
+		});
+		this.addCommand({
+			id: "open-next-review-note",
+			name: "Open next note to review",
+			callback: () => void this.review.openNext(),
+		});
+	}
+
+	/** Review needs vir-cli >= 0.23.0. Uses the version the status bar last saw. */
+	async ensureReviewSupport(): Promise<"supported" | "unsupported" | "unknown"> {
+		if (this.cliVersion === null) {
+			try {
+				this.cliVersion = (await this.client.doctor()).version;
+			} catch {
+				return "unknown";
+			}
+		}
+		return isAtLeast(this.cliVersion, REVIEW_MIN_CLI) ? "supported" : "unsupported";
 	}
 
 	private registerMobilePlaceholder(): void {
