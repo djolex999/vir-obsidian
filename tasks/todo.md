@@ -61,10 +61,10 @@ The CLI emitted `pdf` notes (vir-cli 0.11.0+) that the plugin only rendered as a
 - [x] Manual pass in the real vault (6/7; every action reverted): queue+header, approve, reject+Undo, busy, old-CLI gate, no card on topic/archived
 - [x] Final-review fix wave: card refresh on file-open, loading/unavailable card states, Undo waits for idle + retries on busy/timeout, no stray navigation, open-next skips active file
 - [x] Stale card fix: next note opens with `openFile(file, { active: true })` (612b4f2) — live-verified
-- [x] Public-repo leak: fixture had 94 real client-project items; filtered to `vir`-only and branch history rewritten (force-push) so no commit carries it
+- [x] Review-queue contract fixture now keeps only the `vir` project's own notes; branch history rewritten before merge
 - [ ] **Verify save-before-approve** (never run): throwaway vault → type in a note → Approve within 1 s → reopen → both `verified: true` and the text present. A failure = 0.3.1
-- [ ] GitHub Support purge of commit `361698e` (still fetchable by SHA) — only if the client notes are confidential
-- [ ] Decide on `tests/contract/fixtures/query.json` on main: 4 TRAIN + 1 growthq note previews public since 2026-07-30; recapture with a vir-only filter
+- [ ] Optional: request a GitHub cache purge for the pre-rewrite fixture commit (SHA in the private vir handoff)
+- [ ] Recapture `tests/contract/fixtures/query.json` with a vir-only filter (it predates the filter rule)
 - [ ] Deferred minors (final review: CAN-WAIT): isolate onChange listeners in ReviewStore.emit; stale-fetch race in undoReject; dedupe ensureReviewSupport while CLI unreachable + filter metadataCache "changed" to the active file; header "0·0·0" above a first-fetch error; notice padding click still dismisses without undo; gate approve/reject commands on CLI ≥ 0.23.0
 
 ## In progress / next

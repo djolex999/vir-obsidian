@@ -30,15 +30,14 @@ a fix wave, and a live manual pass in the real vault.
   action (guards against Obsidian overwriting the CLI's `verified: true`) was
   never exercised: typing into the editor from background automation was unsafe
   in the real vault. Needs a manual run in a throwaway vault.
-- Owner decision: GitHub Support purge of commit `361698e` (a fixture with 94
-  real client-project items; removed from every branch by a history rewrite, but
-  GitHub still serves it by SHA).
+- Owner decision: optional GitHub cache purge for the pre-rewrite fixture
+  commit (SHA in the private vir handoff).
 
 ## Next session: start here
 
 1. Run the save-before-approve check in a throwaway vault (steps in
    `tasks/todo.md` under v0.3.0). If it fails, ship 0.3.1.
-2. Decide on `tests/contract/fixtures/query.json` (4 TRAIN + 1 growthq previews,
-   public since July) — recapture filtered to `vir` notes.
+2. Recapture `tests/contract/fixtures/query.json` filtered to `vir` notes
+   (it predates the filter rule).
 3. Then roadmap: 0.4.0 Topics tab + Compose action (`vir compose` would need a
    JSON output shape first).
