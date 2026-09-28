@@ -40,3 +40,16 @@ export function categoryColor(category: string): string {
 			return "var(--text-muted)";
 	}
 }
+
+export function verdictColor(verdict: string): string {
+	switch (verdict) {
+		case "reject":
+			return "var(--color-red)";
+		case "merge":
+			return "var(--color-orange)";
+		case "verify":
+			return "var(--color-yellow)";
+		default:
+			return "var(--text-muted)";
+	}
+}

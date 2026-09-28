@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { relativeTime, categoryColor } from "../src/lib/format";
+import { relativeTime, categoryColor, verdictColor } from "../src/lib/format";
 
 const NOW = Date.parse("2026-05-27T12:00:00.000Z");
 
@@ -46,5 +46,14 @@ describe("categoryColor", () => {
 		for (const c of ["pattern", "gotcha", "decision", "tool", "article", "topic"]) {
 			expect(categoryColor(c)).not.toBe(pdf);
 		}
+	});
+});
+
+describe("verdictColor", () => {
+	it("maps each verdict to a distinct color, muted for unknown", () => {
+		expect(verdictColor("reject")).toBe("var(--color-red)");
+		expect(verdictColor("merge")).toBe("var(--color-orange)");
+		expect(verdictColor("verify")).toBe("var(--color-yellow)");
+		expect(verdictColor("keep")).toBe("var(--text-muted)");
 	});
 });
