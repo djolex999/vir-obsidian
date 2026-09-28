@@ -35,7 +35,9 @@ export class ReviewController {
 
 	async openPath(path: string, leaf?: WorkspaceLeaf): Promise<void> {
 		const file = this.app.vault.getAbstractFileByPath(path);
-		if (file instanceof TFile) await (leaf ?? this.app.workspace.getLeaf(false)).openFile(file);
+		// active: true — after a click in the sidebar the sidebar leaf is active, and
+		// getActiveFile() would keep returning the previous note; the card reads it.
+		if (file instanceof TFile) await (leaf ?? this.app.workspace.getLeaf(false)).openFile(file, { active: true });
 	}
 
 	private async act(action: "approve" | "reject", file: TFile): Promise<void> {
