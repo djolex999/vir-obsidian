@@ -83,3 +83,48 @@ describe("vir query --json contract (fixture: query.json)", () => {
 		}
 	});
 });
+
+describe("vir review --json contract (fixtures: review-*.json, vir-cli 0.23.0)", () => {
+	it("queue matches VirReviewQueue", () => {
+		const q = load("review-queue.json") as { items: Record<string, unknown>[]; counts: Record<string, unknown> };
+		expect(kind(q.counts.unaudited)).toBe("number");
+		expect(kind(q.counts.stale)).toBe("number");
+		expect(q.items.length).toBeGreaterThan(0);
+		for (const i of q.items) {
+			expect(kind(i.path)).toBe("string");
+			expect(kind(i.sessionId)).toBe("string");
+			expect(kind(i.title)).toBe("string");
+			expect(VIR_CATEGORIES).toContain(i.category);
+			expect(["string", "null"]).toContain(kind(i.project));
+			expect(kind(i.date)).toBe("string");
+			expect(kind(i.confidence)).toBe("number");
+			expect(["reject", "merge", "verify"]).toContain(i.verdict);
+			expect(kind(i.reason)).toBe("string");
+			expect(kind(i.auditedAt)).toBe("string");
+			if (i.mergeInto !== null) {
+				const m = i.mergeInto as Record<string, unknown>;
+				expect(kind(m.sessionId)).toBe("string");
+				expect(["string", "null"]).toContain(kind(m.path));
+				expect(["string", "null"]).toContain(kind(m.title));
+			}
+		}
+	});
+
+	it("action results match VirReviewActionResult", () => {
+		for (const [file, action] of [
+			["review-approve.json", "approve"],
+			["review-reject.json", "reject"],
+			["review-restore.json", "restore"],
+		] as const) {
+			const r = load(file) as Record<string, unknown>;
+			expect(r.action).toBe(action);
+			expect(kind(r.path)).toBe("string");
+			expect(kind(r.sessionId)).toBe("string");
+		}
+		expect((load("review-reject.json") as { path: string }).path.startsWith(".rejected/")).toBe(true);
+	});
+
+	it("busy is a VirErrorPayload with kind busy", () => {
+		expect(load("review-busy.json")).toMatchObject({ kind: "busy" });
+	});
+});

@@ -51,6 +51,15 @@ The CLI emitted `pdf` notes (vir-cli 0.11.0+) that the plugin only rendered as a
 - 0.4.0 Topics tab + Compose action
 - later: Ask the vault (deferred: paid LLM call per ask)
 
+## v0.3.0 (review queue, PR open)
+- [x] Task 4: review wire types + VirClient.reviewQueue/review
+- [x] Task 5: pure review-queue lib + store
+- [x] Task 6: review controller (approve/reject/undo, busy handling)
+- [x] Task 7: Review tab + active-note card
+- [x] Task 8: commands (approve, reject, open next)
+- [x] Task 9: contract fixtures, docs, 0.3.0
+- [ ] Manual pass in Obsidian; tag `0.3.0` only after vir-cli 0.23.0 is on npm
+
 ## In progress / next
 - [x] ~~Confirm the `0.1.3` `release.yml` run + portal re-validate.~~ Long done; 0.2.0 has since shipped via the same tag-push → `release.yml` mechanism cleanly.
 - [ ] Portal/marketplace: confirm the listing reflects 0.2.0 (auto-detect from the release); monitor any re-validation.

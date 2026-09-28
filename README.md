@@ -59,6 +59,14 @@ In both tabs, a green ✓ marks a note approved in `vir review` (`verified: true
 ### Related tab
 Runs `vir query` against the note you're editing (debounced) and lists the most relevant distilled notes — including `topic` syntheses from `vir compose`. Results preserve `vir`'s own ranking (it diversifies via MMR — the plugin never re-sorts), filtered by a confidence threshold you control.
 
+### Review tab
+
+Lists the notes `vir audit` flagged, worst first, each with the auditor's verdict and reason. Open a queued note and a card appears on the Related and Review tabs with Approve and Reject buttons. Reject moves the note to `.rejected/` and shows an 8-second Undo. Three commands cover the same flow and can take hotkeys: "Approve current note", "Reject current note" and "Open next note to review".
+
+Needs vir-cli 0.23.0 or newer; on an older binary the tab shows an update message. `vir audit` itself stays in the terminal.
+
+Edits to a note's body are replaced the next time vir rewrites it; approve records your verdict, not your edits.
+
 ## Links
 
 - **vir CLI** — [`@djolex999/vir-cli` on npm](https://www.npmjs.com/package/@djolex999/vir-cli)

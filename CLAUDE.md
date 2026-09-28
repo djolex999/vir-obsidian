@@ -5,7 +5,7 @@ Obsidian plugin for **vir** (`@djolex999/vir-cli`). MIT. Separate repo from `vir
 ## Non-negotiable architecture (do not relitigate)
 1. CLI is the only contract. Shell to `vir` via child_process.spawn + parse JSON. No HTTP, no DB reads, no shared package.
 2. Vault read via Obsidian Vault/metadataCache API. Recent tab does NOT call vir. Related tab + Search modal are the only `vir query` callers.
-3. Two wire shapes: `VirQueryResult[]` and `VirDoctorResult` (see src/types.ts).
+3. Three wire shapes: `VirQueryResult[]`, `VirDoctorResult`, and the `vir review --json` shapes (`VirReviewQueue`, `VirReviewActionResult`). Review is the only write path, and it goes through the CLI. (see src/types.ts)
 4. Disposal hygiene is marketplace-critical: intervals via registerInterval, events via registerEvent, DOM via registerDomEvent. No manual onunload cleanup.
 5. vir's result order is authoritative (MMR-diversified). Preserve `vir query` order — never re-sort by score. Score is informational only.
 6. Filter Related/Search by `confidence` (default 0.7), never by `score`.
