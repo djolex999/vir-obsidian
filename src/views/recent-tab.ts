@@ -1,6 +1,6 @@
 import { App, TFile } from "obsidian";
 import type VirPlugin from "../main";
-import { extractVirMeta } from "../lib/frontmatter";
+import { extractVirMeta, isArchivedPath, isLowConfidence } from "../lib/frontmatter";
 import { renderResultRow, renderEmptyState } from "./result-row";
 
 interface RecentRow {
@@ -9,6 +9,8 @@ interface RecentRow {
 	project?: string;
 	date?: string;
 	title?: string;
+	verified: boolean;
+	dimmed: boolean;
 }
 
 export class RecentTab {
@@ -26,7 +28,7 @@ export class RecentTab {
 			return;
 		}
 
-		for (const { file, date, category, project, title } of notes) {
+		for (const { file, date, category, project, title, verified, dimmed } of notes) {
 			renderResultRow(container, {
 				// Real title from frontmatter (source_title/title/topic); the basename
 				// slug is the fallback for notes without one.
@@ -34,6 +36,8 @@ export class RecentTab {
 				category,
 				project,
 				date,
+				verified,
+				dimmed,
 				onClick: () => void this.app.workspace.getLeaf(false).openFile(file),
 			});
 		}
@@ -41,7 +45,9 @@ export class RecentTab {
 
 	private collect(): RecentRow[] {
 		const rows: RecentRow[] = [];
+		const { minConfidence } = this.plugin.settings;
 		for (const file of this.app.vault.getMarkdownFiles()) {
+			if (isArchivedPath(file.path)) continue;
 			const fm = this.app.metadataCache.getFileCache(file)?.frontmatter;
 			const meta = extractVirMeta(fm);
 			if (!meta) continue;
@@ -51,6 +57,8 @@ export class RecentTab {
 				project: meta.project,
 				date: meta.date,
 				title: meta.title,
+				verified: meta.verified,
+				dimmed: isLowConfidence(meta, minConfidence),
 			});
 		}
 		rows.sort((a, b) => (Date.parse(b.date ?? "") || 0) - (Date.parse(a.date ?? "") || 0));

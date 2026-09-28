@@ -19,6 +19,26 @@ export interface VirNoteMeta {
 	project?: string;
 	date?: string;
 	title?: string;
+	confidence?: number;
+	/** `verified: true`, stamped by `vir review` when a human approves the note. */
+	verified: boolean;
+}
+
+// `vir dedupe` moves a merge loser, frontmatter intact, into a flat
+// `archived/` folder under the output dir. Unlike `.rejected/`, Obsidian indexes
+// it, so the Recent scan must skip it by path: the file carries no marker.
+export function isArchivedPath(path: string): boolean {
+	const parts = path.split("/");
+	return parts.length >= 2 && parts[parts.length - 2] === "archived";
+}
+
+// Related already hides notes below the threshold, so only Recent dims them.
+export function isLowConfidence(
+	meta: Pick<VirNoteMeta, "confidence" | "verified">,
+	minConfidence: number,
+): boolean {
+	if (meta.verified) return false;
+	return typeof meta.confidence === "number" && meta.confidence < minConfidence;
 }
 
 // The note's display title. Sessions carry `topic`; topics carry `title`;
@@ -64,5 +84,13 @@ export function extractVirMeta(
 					: typeof fm["distilled_at"] === "string"
 						? fm["distilled_at"]
 						: undefined;
-	return { category, project, date, title: titleFromFrontmatter(fm) };
+	const confidence = typeof fm["confidence"] === "number" ? fm["confidence"] : undefined;
+	return {
+		category,
+		project,
+		date,
+		title: titleFromFrontmatter(fm),
+		confidence,
+		verified: fm["verified"] === true,
+	};
 }

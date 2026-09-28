@@ -90,11 +90,13 @@ export class RelatedTab {
 		}
 
 		for (const r of filtered) {
+			const { title, verified } = this.metaForPath(r.path);
 			renderResultRow(container, {
-				title: this.titleForPath(r.path),
+				title,
 				category: r.category,
-				project: r.project,
+				project: r.project ?? undefined,
 				date: r.date,
+				verified,
 				score: r.score,
 				onClick: () => this.openByPath(r.path),
 			});
@@ -104,14 +106,14 @@ export class RelatedTab {
 	// The wire result carries no title, so read the note's real title
 	// (source_title/title/topic) from frontmatter; the basename slug is the
 	// fallback for notes outside the vault or without a title field.
-	private titleForPath(path: string): string {
+	private metaForPath(path: string): { title: string; verified: boolean } {
 		const file = this.app.vault.getAbstractFileByPath(path);
-		if (file instanceof TFile) {
-			const fm = this.app.metadataCache.getFileCache(file)?.frontmatter;
-			const title = titleFromFrontmatter(fm);
-			if (title) return title;
-		}
-		return titleFromPath(path);
+		const fm =
+			file instanceof TFile ? this.app.metadataCache.getFileCache(file)?.frontmatter : undefined;
+		return {
+			title: titleFromFrontmatter(fm) ?? titleFromPath(path),
+			verified: fm?.["verified"] === true,
+		};
 	}
 
 	private openByPath(path: string): void {

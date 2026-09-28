@@ -3,6 +3,8 @@ import {
 	isVirCategory,
 	extractVirMeta,
 	titleFromFrontmatter,
+	isArchivedPath,
+	isLowConfidence,
 } from "../src/lib/frontmatter";
 
 describe("isVirCategory", () => {
@@ -33,14 +35,29 @@ describe("extractVirMeta", () => {
 	it("extracts category with optional project/date", () => {
 		expect(
 			extractVirMeta({ category: "decision", project: "vir", date: "2026-05-01T00:00:00.000Z" }),
-		).toEqual({ category: "decision", project: "vir", date: "2026-05-01T00:00:00.000Z" });
+		).toEqual({
+			category: "decision",
+			project: "vir",
+			date: "2026-05-01T00:00:00.000Z",
+			verified: false,
+		});
 	});
 	it("omits non-string project/date", () => {
 		expect(extractVirMeta({ category: "tool", project: 5, date: true })).toEqual({
 			category: "tool",
 			project: undefined,
 			date: undefined,
+			verified: false,
 		});
+	});
+	it("reads `verified: true` (stamped by vir review) and nothing else as verified", () => {
+		expect(extractVirMeta({ category: "gotcha", verified: true })?.verified).toBe(true);
+		expect(extractVirMeta({ category: "gotcha", verified: "true" })?.verified).toBe(false);
+		expect(extractVirMeta({ category: "gotcha" })?.verified).toBe(false);
+	});
+	it("reads a numeric confidence and ignores a non-numeric one", () => {
+		expect(extractVirMeta({ category: "gotcha", confidence: 0.62 })?.confidence).toBe(0.62);
+		expect(extractVirMeta({ category: "gotcha", confidence: "high" })?.confidence).toBeUndefined();
 	});
 	it("recognizes a topic note by `type: topic` (it carries no `category` field)", () => {
 		const meta = extractVirMeta({
@@ -107,5 +124,32 @@ describe("titleFromFrontmatter", () => {
 		expect(titleFromFrontmatter({ category: "tool" })).toBeUndefined();
 		expect(titleFromFrontmatter({ source_title: 5 })).toBeUndefined();
 		expect(titleFromFrontmatter(null)).toBeUndefined();
+	});
+});
+
+describe("isArchivedPath", () => {
+	it("matches a note vir dedupe moved into archived/", () => {
+		expect(isArchivedPath("archived/tailwind-specificity-ec453610.md")).toBe(true);
+		expect(isArchivedPath("vir/archived/tailwind-specificity-ec453610.md")).toBe(true);
+	});
+	it("does not match serving notes or a filename that merely contains the word", () => {
+		expect(isArchivedPath("gotchas/tailwind-specificity-ec453610.md")).toBe(false);
+		expect(isArchivedPath("archived-notes.md")).toBe(false);
+		expect(isArchivedPath("patterns/archived.md")).toBe(false);
+	});
+});
+
+describe("isLowConfidence", () => {
+	it("is true below the threshold", () => {
+		expect(isLowConfidence({ confidence: 0.6, verified: false }, 0.7)).toBe(true);
+	});
+	it("is false at or above the threshold", () => {
+		expect(isLowConfidence({ confidence: 0.7, verified: false }, 0.7)).toBe(false);
+	});
+	it("never dims a verified note: the human verdict outranks the model's confidence", () => {
+		expect(isLowConfidence({ confidence: 0.3, verified: true }, 0.7)).toBe(false);
+	});
+	it("does not dim a note with no confidence (topics, articles)", () => {
+		expect(isLowConfidence({ verified: false }, 0.7)).toBe(false);
 	});
 });

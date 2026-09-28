@@ -67,7 +67,7 @@ export class VirSearchModal extends Modal {
 			renderResultRow(this.resultsEl, {
 				title: r.path.split("/").pop()?.replace(/\.md$/i, "") ?? r.path,
 				category: r.category,
-				project: r.project,
+				project: r.project ?? undefined,
 				date: r.date,
 				score: r.score,
 				onClick: () => {
