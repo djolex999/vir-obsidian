@@ -33,7 +33,9 @@ export class VirStatusBar {
 	private async poll(): Promise<void> {
 		let view;
 		try {
-			view = resolveDaemonStatus(await this.plugin.client.doctor());
+			const doctor = await this.plugin.client.doctor();
+			this.plugin.cliVersion = doctor.version;
+			view = resolveDaemonStatus(doctor);
 		} catch (err) {
 			view = resolveDaemonStatus(err instanceof Error ? err : new Error(String(err)));
 		}

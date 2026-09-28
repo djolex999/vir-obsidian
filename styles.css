@@ -26,3 +26,14 @@
 /* ---- search modal ---- */
 .vir-search-input { width: 100%; margin-bottom: 8px; }
 .vir-search-results { max-height: 50vh; overflow-y: auto; }
+
+/* ---- review ---- */
+.vir-card-slot { padding: 8px 8px 0; }
+.vir-card { padding: 8px; border: 1px solid var(--background-modifier-border); border-radius: 6px; font-size: var(--font-ui-small); }
+.vir-card-head { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.vir-card-reason { color: var(--text-muted); font-size: var(--font-ui-smaller); margin-bottom: 4px; }
+.vir-card-muted { color: var(--text-muted); }
+.vir-card-verified { color: var(--color-green); font-weight: 600; }
+.vir-card-actions { display: flex; gap: 6px; margin-top: 6px; }
+.vir-review-header { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 8px 8px; font-size: var(--font-ui-smaller); color: var(--text-muted); }
+.vir-row-reason { font-size: var(--font-ui-smaller); color: var(--text-muted); margin-top: 2px; }

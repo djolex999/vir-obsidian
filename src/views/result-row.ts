@@ -1,5 +1,5 @@
 import { setTooltip } from "obsidian";
-import { categoryColor, relativeTime } from "../lib/format";
+import { categoryColor, relativeTime, verdictColor } from "../lib/format";
 
 export interface RowData {
 	title: string;
@@ -9,6 +9,8 @@ export interface RowData {
 	score?: number;
 	verified?: boolean;
 	dimmed?: boolean;
+	verdict?: string;
+	reason?: string;
 	onClick: () => void;
 }
 
@@ -26,8 +28,13 @@ export function renderResultRow(parent: HTMLElement, data: RowData): void {
 		const mark = meta.createSpan({ cls: "vir-verified", text: "✓" });
 		setTooltip(mark, "Verified in vir review");
 	}
+	if (data.verdict) {
+		const v = meta.createSpan({ cls: "vir-badge", text: data.verdict });
+		v.style.backgroundColor = verdictColor(data.verdict);
+	}
 	if (data.project) meta.createSpan({ text: data.project });
 	if (data.date) meta.createSpan({ text: relativeTime(data.date) });
+	if (data.reason) row.createDiv({ cls: "vir-row-reason", text: data.reason });
 
 	row.addEventListener("click", data.onClick);
 }
