@@ -15,6 +15,8 @@
 /* ---- result rows ---- */
 .vir-row { padding: 8px; border-radius: 6px; cursor: pointer; }
 .vir-row:hover { background: var(--background-modifier-hover); }
+.vir-row.is-low { opacity: 0.55; }
+.vir-verified { color: var(--color-green); font-weight: 600; }
 .vir-row-title { font-weight: 600; font-size: var(--font-ui-small); margin-bottom: 4px; }
 .vir-row-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: var(--font-ui-smaller); color: var(--text-muted); }
 .vir-badge { padding: 1px 6px; border-radius: 4px; font-size: var(--font-ui-smaller); color: var(--text-on-accent); }

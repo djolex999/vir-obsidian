@@ -15,8 +15,10 @@ export interface VirQueryResult {
 	category: VirCategory;
 	confidence: number;
 	preview: string;
-	project?: string;
-	date?: string;
+	/** null, not absent, when the note has no project (vir-cli json.ts). */
+	project: string | null;
+	/** ISO 8601, possibly date-only; "" when the note has no date. */
+	date: string;
 }
 
 export interface VirOllamaStatus {

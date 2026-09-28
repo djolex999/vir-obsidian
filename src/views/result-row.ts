@@ -7,11 +7,13 @@ export interface RowData {
 	project?: string;
 	date?: string;
 	score?: number;
+	verified?: boolean;
+	dimmed?: boolean;
 	onClick: () => void;
 }
 
 export function renderResultRow(parent: HTMLElement, data: RowData): void {
-	const row = parent.createDiv({ cls: "vir-row" });
+	const row = parent.createDiv({ cls: data.dimmed ? "vir-row is-low" : "vir-row" });
 	if (typeof data.score === "number") {
 		setTooltip(row, `score ${data.score.toFixed(3)}`);
 	}
@@ -20,6 +22,10 @@ export function renderResultRow(parent: HTMLElement, data: RowData): void {
 	const meta = row.createDiv({ cls: "vir-row-meta" });
 	const badge = meta.createSpan({ cls: "vir-badge", text: data.category });
 	badge.style.backgroundColor = categoryColor(data.category);
+	if (data.verified) {
+		const mark = meta.createSpan({ cls: "vir-verified", text: "✓" });
+		setTooltip(mark, "Verified in vir review");
+	}
 	if (data.project) meta.createSpan({ text: data.project });
 	if (data.date) meta.createSpan({ text: relativeTime(data.date) });
 

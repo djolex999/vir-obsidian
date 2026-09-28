@@ -37,6 +37,20 @@ The CLI emitted `pdf` notes (vir-cli 0.11.0+) that the plugin only rendered as a
 - [x] **Real titles, not slugs:** new `titleFromFrontmatter` (`source_title`/`title`/`topic`); both panes render the real title (the wire carries no title field). Per the chosen option, this improved ALL categories, not just pdf.
 - [x] Verified: `vir --version` = 0.11.1 on PATH; `vir query --json` returns the Cabot note as `category:"pdf"`; real-note logic test; build clean; **41/41 tests**. Live in Obsidian: Cabot note renders pink `pdf` badge + real title in Recent + Related.
 
+## v0.2.2 (parity with vir-cli 0.22 — plugin only, no CLI change)
+- [x] Recent skips `archived/` (vir dedupe losers keep their frontmatter; Obsidian indexes the folder, unlike `.rejected/`) — `isArchivedPath`
+- [x] Green ✓ for `verified: true` in Recent + Related (`metaForPath` replaces `titleForPath`)
+- [x] Low-confidence dimming in Recent (`isLowConfidence`; verified never dims) — the docs site already claimed this
+- [x] `VirQueryResult.project: string|null`, `date: string` to match CLI json.ts; contract test pins both; the type change caught the search-modal render site
+- [x] Cut: `branches` in the row (too long for a compact row)
+- [x] 58 vitest cases, build clean; live-checked in vault (✓ on strict-false-unset-migration in Related)
+- [ ] Tag `0.2.2` (push bare-semver tag → release.yml) — needs owner go-ahead
+
+## Roadmap after 0.2.2 (agreed 2026-09-28)
+- 0.3.0 review/audit queue in the sidebar (architectural: new versioned CLI JSON contracts + min-CLI-version check)
+- 0.4.0 Topics tab + Compose action
+- later: Ask the vault (deferred: paid LLM call per ask)
+
 ## In progress / next
 - [x] ~~Confirm the `0.1.3` `release.yml` run + portal re-validate.~~ Long done; 0.2.0 has since shipped via the same tag-push → `release.yml` mechanism cleanly.
 - [ ] Portal/marketplace: confirm the listing reflects 0.2.0 (auto-detect from the release); monitor any re-validation.

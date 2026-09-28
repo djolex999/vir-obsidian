@@ -76,8 +76,10 @@ describe("vir query --json contract (fixture: query.json)", () => {
 			expect(VIR_CATEGORIES).toContain(h.category);
 			expect(kind(h.confidence)).toBe("number");
 			expect(kind(h.preview)).toBe("string");
-			expect(["string", "undefined"]).toContain(kind(h.project));
-			expect(["string", "undefined"]).toContain(kind(h.date));
+			// CLI json.ts: project is string|null (null, not absent, when unknown);
+			// date is always a string, "" when the note has none.
+			expect(["string", "null"]).toContain(kind(h.project));
+			expect(kind(h.date)).toBe("string");
 		}
 	});
 });
