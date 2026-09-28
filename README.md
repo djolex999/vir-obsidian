@@ -61,7 +61,7 @@ Runs `vir query` against the note you're editing (debounced) and lists the most 
 
 ### Review tab
 
-Lists the notes `vir audit` flagged, worst first, each with the auditor's verdict and reason. Open a queued note and a card appears on the Related and Review tabs with Approve and Reject buttons. Reject moves the note to `.rejected/` and shows an 8-second Undo. Three commands cover the same flow and can take hotkeys: "Approve current note", "Reject current note" and "Open next note to review".
+Lists the notes `vir audit` flagged, worst first, each with the auditor's verdict and reason. Open a queued note and a card appears on the Related and Review tabs with Approve and Reject buttons. Reject moves the note to `.rejected/` and shows an 8-second Undo; after it expires, restore the note with `vir review --restore <name>` in a terminal. Three commands cover the same flow and can take hotkeys: "Approve current note", "Reject current note" and "Open next note to review".
 
 Needs vir-cli 0.23.0 or newer; on an older binary the tab shows an update message. `vir audit` itself stays in the terminal.
 

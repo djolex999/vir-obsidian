@@ -27,7 +27,8 @@ export class ReviewController {
 
 	async openNext(): Promise<void> {
 		if (this.store.snapshot.fetchedAt === null) await this.store.refresh();
-		const first = this.store.snapshot.items[0];
+		const activePath = this.app.workspace.getActiveFile()?.path;
+		const first = this.store.snapshot.items.find((i) => i.path !== activePath);
 		if (first) await this.openPath(first.path);
 		else new Notice("Vir: nothing left to review");
 	}
@@ -41,8 +42,13 @@ export class ReviewController {
 		const leaf = this.leafShowing(file);
 		// Obsidian saves the editor buffer on a delay. If it saves after the CLI
 		// writes `verified: true`, the stamp is silently overwritten. Flush first.
-		for (const l of this.app.workspace.getLeavesOfType("markdown")) {
-			if (l.view instanceof MarkdownView && l.view.file?.path === file.path) await l.view.save();
+		try {
+			for (const l of this.app.workspace.getLeavesOfType("markdown")) {
+				if (l.view instanceof MarkdownView && l.view.file?.path === file.path) await l.view.save();
+			}
+		} catch {
+			new Notice("Vir: couldn't save the note before acting; nothing was changed.");
+			return;
 		}
 		const title = this.store.snapshot.items.find((i) => i.path === file.path)?.title ?? file.basename;
 		const outcome = await this.store.act(action, file.path);
@@ -50,8 +56,11 @@ export class ReviewController {
 			if (outcome.reason !== "in_flight") new Notice(`Vir: ${outcome.message}`);
 			return;
 		}
-		const next = nextItem(this.store.snapshot.items, Math.max(outcome.index, 0));
-		if (next) await this.openPath(next.path, leaf ?? undefined);
+		// An approve of a note that wasn't queued keeps you on it; a reject moves the file away.
+		if (outcome.index >= 0 || action === "reject") {
+			const next = nextItem(this.store.snapshot.items, Math.max(outcome.index, 0));
+			if (next) await this.openPath(next.path, leaf ?? undefined);
+		}
 		if (action === "reject") this.offerUndo(title, outcome.removed, outcome.index, outcome.result.path);
 	}
 
@@ -62,19 +71,30 @@ export class ReviewController {
 		rejectedPath: string,
 	): void {
 		let notice: Notice | null = null;
-		const frag = createFragment((f) => {
-			f.appendText(`Rejected ${title} · `);
-			const link = f.createEl("a", { text: "Undo", href: "#" });
-			link.addEventListener("click", (evt) => {
-				evt.preventDefault();
-				notice?.hide();
-				void this.store.undoReject(removed, index, rejectedPath).then(async (undo) => {
-					if (!undo.ok) {
-						new Notice(`Vir: ${undo.message}`);
-						return;
+		let started = false;
+		const runUndo = (): void => {
+			if (started) return;
+			started = true;
+			notice?.hide();
+			void this.store.undoReject(removed, index, rejectedPath).then(async (undo) => {
+				if (!undo.ok) {
+					if (undo.message) new Notice(`Vir: ${undo.message}`);
+					if (undo.reason === "busy" || undo.reason === "timeout") {
+						this.offerUndo(title, removed, index, rejectedPath);
 					}
-					await this.openPath(undo.result.path);
-				});
+					return;
+				}
+				await this.openPath(undo.result.path);
+			});
+		};
+		const frag = createFragment((f) => {
+			const wrap = f.createSpan({ cls: "vir-undo-notice" });
+			wrap.style.cursor = "pointer";
+			wrap.appendText(`Rejected ${title} · `);
+			wrap.createEl("a", { text: "Undo", href: "#" });
+			wrap.addEventListener("click", (evt) => {
+				evt.preventDefault();
+				runUndo();
 			});
 		});
 		notice = new Notice(frag, UNDO_MS);

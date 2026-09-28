@@ -59,6 +59,7 @@ export class VirSidebarView extends ItemView {
 		this.relatedTab.mount(this.containers.related);
 		this.register(this.plugin.reviewStore.onChange(() => this.onReviewChange()));
 		this.registerEvent(this.app.workspace.on("active-leaf-change", () => this.renderCard()));
+		this.registerEvent(this.app.workspace.on("file-open", () => this.renderCard()));
 		this.registerEvent(this.app.metadataCache.on("changed", () => this.renderCard()));
 		this.show(this.activeTab);
 	}
@@ -96,6 +97,7 @@ export class VirSidebarView extends ItemView {
 			return;
 		}
 		void this.plugin.ensureReviewSupport().then((s) => {
+			if (this.activeTab === "recent") return;
 			if (s === "supported") this.card.render(this.cardContainer);
 			else this.cardContainer.hide();
 		});

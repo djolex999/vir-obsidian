@@ -41,6 +41,7 @@ export class ReviewStore {
 	private error: string | null = null;
 	private notConfigured = false;
 	private readonly listeners = new Set<() => void>();
+	private idleWaiters: Array<() => void> = [];
 
 	constructor(
 		private readonly getClient: () => ReviewClient,
@@ -97,7 +98,15 @@ export class ReviewStore {
 		}, path);
 	}
 
+	/** Resolves once no action is in flight (immediately when idle). */
+	whenIdle(): Promise<void> {
+		if (!this.inFlight) return Promise.resolve();
+		return new Promise((resolve) => this.idleWaiters.push(resolve));
+	}
+
 	async undoReject(item: VirReviewItem | null, index: number, rejectedPath: string): Promise<ActionOutcome> {
+		// Undo clicked while an approve runs must wait, not bounce off in_flight.
+		while (this.inFlight) await this.whenIdle();
 		return this.guarded(async () => {
 			const result = await this.getClient().review("restore", rejectedName(rejectedPath));
 			if (item) this.items = insertItem(this.items, item, index);
@@ -134,6 +143,9 @@ export class ReviewStore {
 			return { ok: false, reason: "error", message: errorMessage(err) };
 		} finally {
 			this.inFlight = false;
+			const waiters = this.idleWaiters;
+			this.idleWaiters = [];
+			for (const w of waiters) w();
 			this.emit();
 		}
 	}

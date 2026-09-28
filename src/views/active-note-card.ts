@@ -31,6 +31,17 @@ export class ActiveNoteCard {
 			return;
 		}
 
+		if (snap.fetchedAt === null || snap.error !== null || snap.notConfigured) {
+			const text =
+				snap.fetchedAt === null && snap.error === null && !snap.notConfigured
+					? "Loading review queue…"
+					: snap.error !== null
+						? `Review queue unavailable: ${snap.error}`
+						: "Review queue unavailable";
+			card.createDiv({ cls: "vir-card-muted", text });
+			return;
+		}
+
 		const item = findItem(snap.items, file.path);
 		const head = card.createDiv({ cls: "vir-card-head" });
 		if (item) {

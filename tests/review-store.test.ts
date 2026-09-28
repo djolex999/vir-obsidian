@@ -149,4 +149,39 @@ describe("ReviewStore", () => {
 		expect(undo).toEqual({ ok: false, reason: "error", message: "patterns/a.md already exists — not overwriting it" });
 		expect(store.snapshot.items.map((i) => i.path)).toEqual(["patterns/b.md"]);
 	});
+	it("whenIdle resolves immediately when nothing is in flight", async () => {
+		const { store } = stub(queue("patterns/a.md"));
+		await expect(store.whenIdle()).resolves.toBeUndefined();
+	});
+
+	it("undoReject called while an act is in flight waits, then succeeds", async () => {
+		const { client, store } = stub(queue("patterns/a.md", "patterns/b.md"));
+		await store.refresh();
+		const rej = await store.act("reject", "patterns/a.md");
+		if (!rej.ok) throw new Error("reject failed");
+		let release!: () => void;
+		client.review.mockImplementationOnce(
+			() =>
+				new Promise((resolve) => {
+					release = () => resolve({ action: "approve", path: "patterns/b.md", sessionId: "sid" });
+				}),
+		);
+		const approving = store.act("approve", "patterns/b.md");
+		const undoing = store.undoReject(rej.removed, rej.index, rej.result.path);
+		release();
+		await approving;
+		const undo = await undoing;
+		expect(undo.ok).toBe(true);
+	});
+
+	it("undo returning busy leaves the queue unchanged and reports busy", async () => {
+		const { client, store } = stub(queue("patterns/a.md", "patterns/b.md"));
+		await store.refresh();
+		const out = await store.act("reject", "patterns/a.md");
+		if (!out.ok) throw new Error("reject failed");
+		client.review.mockRejectedValueOnce(new VirCLIError("locked", "", 1, "busy"));
+		const undo = await store.undoReject(out.removed, out.index, out.result.path);
+		expect(undo).toMatchObject({ ok: false, reason: "busy" });
+		expect(store.snapshot.items.map((i) => i.path)).toEqual(["patterns/b.md"]);
+	});
 });
