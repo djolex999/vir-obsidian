@@ -1,6 +1,13 @@
 import { spawn } from "child_process";
 import { dirname, isAbsolute, delimiter } from "path";
-import type { VirQueryResult, VirDoctorResult, VirErrorPayload } from "./types";
+import type {
+	VirQueryResult,
+	VirDoctorResult,
+	VirErrorPayload,
+	VirReviewAction,
+	VirReviewActionResult,
+	VirReviewQueue,
+} from "./types";
 
 export class VirNotFoundError extends Error {
 	constructor(message = "vir binary not found") {
@@ -21,6 +28,8 @@ export class VirCLIError extends Error {
 		message: string,
 		public stderr: string,
 		public exitCode: number,
+		/** VirErrorPayload.kind when vir sent one (e.g. "busy", "not_found"). */
+		public readonly kind?: string,
 	) {
 		super(message);
 		this.name = "VirCLIError";
@@ -73,6 +82,18 @@ export class VirClient {
 		return this.parse<VirDoctorResult>(out);
 	}
 
+	async reviewQueue(): Promise<VirReviewQueue> {
+		const out = await this.run(["review", "--audited", "--json"], this.queryTimeoutMs);
+		return this.parse<VirReviewQueue>(out);
+	}
+
+	// `--approve=<path>` is one argv token, so a note named `-x.md` can never
+	// be read as a flag by vir's option parser.
+	async review(action: VirReviewAction, target: string): Promise<VirReviewActionResult> {
+		const out = await this.run(["review", `--${action}=${target}`, "--json"], this.queryTimeoutMs);
+		return this.parse<VirReviewActionResult>(out);
+	}
+
 	private run(args: string[], timeoutMs: number): Promise<string> {
 		return new Promise<string>((resolvePromise, rejectPromise) => {
 			let settled = false;
@@ -106,7 +127,7 @@ export class VirClient {
 			child.on("error", (err: NodeJS.ErrnoException) => {
 				finish(() => {
 					if (err.code === "ENOENT") rejectPromise(new VirNotFoundError());
-					else rejectPromise(new VirCLIError(err.message, stderr, -1));
+					else rejectPromise(new VirCLIError(err.message, stderr, -1, undefined));
 				});
 			});
 
@@ -118,7 +139,7 @@ export class VirClient {
 					}
 					const payload = tryParseError(stdout) ?? tryParseError(stderr);
 					const message = payload?.error ?? `vir exited with code ${code}`;
-					rejectPromise(new VirCLIError(message, stderr, code ?? -1));
+					rejectPromise(new VirCLIError(message, stderr, code ?? -1, payload?.kind));
 				});
 			});
 		});

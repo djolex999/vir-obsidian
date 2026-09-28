@@ -53,4 +53,23 @@ describe("VirClient", () => {
 		const results = await client.query("hi", 1);
 		expect(results[0].path).toBe("DIR_IN_PATH");
 	});
+
+	it("reviewQueue parses the queue", async () => {
+		const q = await new VirClient(fx("fake-vir-review.mjs")).reviewQueue();
+		expect(q.items[0]?.verdict).toBe("reject");
+		expect(q.counts).toEqual({ unaudited: 3, stale: 1 });
+	});
+
+	it("review passes the target as one --action=<path> token, leading dash and spaces intact", async () => {
+		const res = await new VirClient(fx("fake-vir-review.mjs")).review("approve", "patterns/-odd name.md");
+		expect(res).toEqual({ action: "approve", path: "patterns/-odd name.md", sessionId: "sid" });
+	});
+
+	it("review surfaces the error kind on VirCLIError", async () => {
+		const err = await new VirClient(fx("fake-vir-review.mjs"))
+			.review("reject", "patterns/BUSY.md")
+			.catch((e: unknown) => e);
+		expect(err).toBeInstanceOf(VirCLIError);
+		expect((err as VirCLIError).kind).toBe("busy");
+	});
 });

@@ -47,3 +47,40 @@ export interface VirErrorPayload {
 	error: string;
 	kind?: string;
 }
+
+export type VirReviewVerdict = "reject" | "merge" | "verify";
+
+export interface VirReviewMergeTarget {
+	sessionId: string;
+	path: string | null;
+	title: string | null;
+}
+
+/** One `vir review --audited --json` row (vir-cli ≥ 0.23.0). */
+export interface VirReviewItem {
+	path: string;
+	sessionId: string;
+	title: string;
+	category: VirCategory;
+	project: string | null;
+	date: string;
+	confidence: number;
+	verdict: VirReviewVerdict;
+	reason: string;
+	mergeInto: VirReviewMergeTarget | null;
+	auditedAt: string;
+}
+
+export interface VirReviewQueue {
+	items: VirReviewItem[];
+	counts: { unaudited: number; stale: number };
+}
+
+export type VirReviewAction = "approve" | "reject" | "restore";
+
+export interface VirReviewActionResult {
+	action: VirReviewAction;
+	/** Where the note is now; `.rejected/<name>` after a reject. */
+	path: string;
+	sessionId: string;
+}
