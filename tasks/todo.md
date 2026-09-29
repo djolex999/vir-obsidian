@@ -72,7 +72,7 @@ The 0.3.0 portal review FAILED on one error + warnings; 0.3.1 clears them (90 vi
 - [x] **Error `obsidianmd/no-static-styles-assignment`** (`review-controller.ts:94`): inline `style.cursor` → `.vir-undo-notice { cursor: pointer }` in `styles.css`
 - [x] **Warning `no-unsafe-assignment`** (`main.ts:115`): `loadData()` cast to `Partial<VirSettings> | null` before the merge
 - [x] **Build provenance attestations**: `release.yml` gets `id-token`/`attestations: write` + `actions/attest-build-provenance@v2` over `main.js`/`manifest.json`/`styles.css`. Run succeeded; attestation verified 2026-09-29 for all 3 assets (SLSA provenance, signed by `release.yml@refs/tags/0.3.1`, commit `3a580f8`)
-- [ ] Confirm the marketplace rescan of 0.3.1 clears the error
+- [x] Marketplace rescan of 0.3.1 confirmed 2026-09-29: Review Caution → **Satisfactory** (7 → 3 issues); inline-styles risk, unsafe-assignment warning and attestations recommendation cleared. Remaining: shell execution, `getSettingDefinitions()`, vault enumeration, portal's "malware scan not available"
 - [ ] **`getSettingDefinitions()`** warning (`settings.ts:24`) deferred: needs Obsidian 1.13 typings + a `minAppVersion` bump to 1.13+, which drops older users. Decide before adopting
 - Left as informational by design: shell execution (`child_process` spawn of `vir`), vault enumeration (Recent tab)
 

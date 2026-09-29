@@ -43,8 +43,9 @@ re-tagged from the merge commit.
 
 ## Next session: start here
 
-0. Check the marketplace rescan of 0.3.1 cleared the error. (Attestations on
-   all 3 release assets already verified with `gh attestation verify`.)
+0. Marketplace rescan of 0.3.1 confirmed: Review is **Satisfactory** (3 issues
+   left: shell execution, `getSettingDefinitions()`, vault enumeration).
+   Attestations verified. Nothing pending on 0.3.1.
 1. Run the save-before-approve check in a throwaway vault (steps in
    `tasks/todo.md` under v0.3.0). If it fails, ship 0.3.2.
 2. Recapture `tests/contract/fixtures/query.json` filtered to `vir` notes
