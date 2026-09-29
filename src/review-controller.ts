@@ -91,7 +91,6 @@ export class ReviewController {
 		};
 		const frag = createFragment((f) => {
 			const wrap = f.createSpan({ cls: "vir-undo-notice" });
-			wrap.style.cursor = "pointer";
 			wrap.appendText(`Rejected ${title} · `);
 			wrap.createEl("a", { text: "Undo", href: "#" });
 			wrap.addEventListener("click", (evt) => {
