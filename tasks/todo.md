@@ -62,7 +62,7 @@ The CLI emitted `pdf` notes (vir-cli 0.11.0+) that the plugin only rendered as a
 - [x] Final-review fix wave: card refresh on file-open, loading/unavailable card states, Undo waits for idle + retries on busy/timeout, no stray navigation, open-next skips active file
 - [x] Stale card fix: next note opens with `openFile(file, { active: true })` (612b4f2) — live-verified
 - [x] Review-queue contract fixture now keeps only the `vir` project's own notes; branch history rewritten before merge
-- [ ] **Verify save-before-approve** (never run): throwaway vault → type in a note → Approve within 1 s → reopen → both `verified: true` and the text present. A failure = 0.3.1
+- [x] **Verify save-before-approve** — PASSED 2026-09-29 (throwaway vault `sbvault`, CLI 0.23.0 via wrapper + fake HOME): typed into the note, Approve in the same batch (<1 s), waited 8 s → disk had both `verified: true` + `reviewed_at` and the typed text. `view.save()` flush works; no 0.3.2 needed. Approve path only, no negative control; Reject shares `act()` but wasn't run
 - [ ] Optional: request a GitHub cache purge for the pre-rewrite fixture commit (SHA in the private vir handoff)
 - [ ] Recapture `tests/contract/fixtures/query.json` with a vir-only filter (it predates the filter rule)
 - [ ] Deferred minors (final review: CAN-WAIT): isolate onChange listeners in ReviewStore.emit; stale-fetch race in undoReject; dedupe ensureReviewSupport while CLI unreachable + filter metadataCache "changed" to the active file; header "0·0·0" above a first-fetch error; notice padding click still dismisses without undo; gate approve/reject commands on CLI ≥ 0.23.0

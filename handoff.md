@@ -34,10 +34,9 @@ re-tagged from the merge commit.
 
 ## Blockers
 
-- **Save-before-approve is unverified.** The `view.save()` flush before an
-  action (guards against Obsidian overwriting the CLI's `verified: true`) was
-  never exercised: typing into the editor from background automation was unsafe
-  in the real vault. Needs a manual run in a throwaway vault.
+- Save-before-approve is **verified** (2026-09-29, throwaway vault): the
+  `view.save()` flush keeps both the typed text and `verified: true`. Approve
+  path only, no negative control; no 0.3.2 needed.
 - Owner decision: optional GitHub cache purge for the pre-rewrite fixture
   commit (SHA in the private vir handoff).
 
@@ -46,9 +45,7 @@ re-tagged from the merge commit.
 0. Marketplace rescan of 0.3.1 confirmed: Review is **Satisfactory** (3 issues
    left: shell execution, `getSettingDefinitions()`, vault enumeration).
    Attestations verified. Nothing pending on 0.3.1.
-1. Run the save-before-approve check in a throwaway vault (steps in
-   `tasks/todo.md` under v0.3.0). If it fails, ship 0.3.2.
-2. Recapture `tests/contract/fixtures/query.json` filtered to `vir` notes
+1. Recapture `tests/contract/fixtures/query.json` filtered to `vir` notes
    (it predates the filter rule).
-3. Then roadmap: 0.4.0 Topics tab + Compose action (`vir compose` would need a
+2. Then roadmap: 0.4.0 Topics tab + Compose action (`vir compose` would need a
    JSON output shape first).
