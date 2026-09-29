@@ -79,7 +79,7 @@ The 0.3.0 portal review FAILED on one error + warnings; 0.3.1 clears them (90 vi
 ## v0.3.2 (docs: hero screenshot shows the Review tab) — RELEASED 2026-09-29 (tag `0.3.2`)
 Plugin code unchanged from 0.3.1; ships so the marketplace picks up the new README image (PR #6, made-up vir notes only).
 - [x] `docs/screenshot.png` → Review tab (card + flagged queue), README alt text updated
-- [ ] Confirm the marketplace page shows the new image (may lag the release)
+- [x] Marketplace confirmed 2026-09-29: current version 0.3.2, new screenshot showing (README image loads from `HEAD`, so it updated before the release did), Review still Satisfactory
 
 ## In progress / next
 - [x] ~~Confirm the `0.1.3` `release.yml` run + portal re-validate.~~ Long done; 0.2.0 has since shipped via the same tag-push → `release.yml` mechanism cleanly.
