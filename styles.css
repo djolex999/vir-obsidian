@@ -37,3 +37,4 @@
 .vir-card-actions { display: flex; gap: 6px; margin-top: 6px; }
 .vir-review-header { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 8px 8px; font-size: var(--font-ui-smaller); color: var(--text-muted); }
 .vir-row-reason { font-size: var(--font-ui-smaller); color: var(--text-muted); margin-top: 2px; }
+.vir-undo-notice { cursor: pointer; }
