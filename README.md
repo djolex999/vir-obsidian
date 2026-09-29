@@ -6,7 +6,7 @@
 
 > [`vir`](https://www.npmjs.com/package/@djolex999/vir-cli) distills your Claude Code sessions into an Obsidian vault of patterns, gotchas, decisions, and tools. This plugin brings that knowledge into Obsidian's sidebar — so the right note finds you while you're writing, not three searches later.
 
-![Vir's Recent tab in the Obsidian sidebar beside an open distilled note showing vir frontmatter](docs/screenshot.png)
+![Vir's Review tab in the Obsidian sidebar: the active-note card with Approve and Reject, and the queue of flagged notes, beside an open distilled note](docs/screenshot.png)
 
 ## What it does
 
