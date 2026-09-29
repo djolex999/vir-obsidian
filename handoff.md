@@ -1,8 +1,8 @@
 # Handoff
 
-State as of **2026-09-29**. Plugin at **0.3.1** (released), minAppVersion 1.7.2.
+State as of **2026-09-29**. Plugin at **0.3.2** (released), minAppVersion 1.7.2.
 **90 vitest cases** green, `npm run build` clean. `origin/main` = `3a580f8`
-(merge of #5). Tags `0.2.2`, `0.3.0` and `0.3.1` pushed; all `release.yml` runs
+(merge of #5). Tags `0.2.2`, `0.3.0`, `0.3.1` and `0.3.2` pushed; all `release.yml` runs
 succeeded. Requires vir-cli **0.23.0** (on npm as `latest`). Only `main`
 remains on the remote.
 
@@ -25,6 +25,9 @@ a fix wave, and a live manual pass in the real vault.
 `minAppVersion` 1.13+). Release hiccup: a first `0.3.1` tag was pushed before
 the PR merged (bad build); tag, run and draft release were deleted and it was
 re-tagged from the merge commit.
+
+**0.3.2**: code identical to 0.3.1; released so the marketplace shows the new
+README hero screenshot (Review tab, made-up vir notes). Check the page shows it.
 
 ## In flight
 

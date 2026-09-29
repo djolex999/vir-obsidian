@@ -76,6 +76,11 @@ The 0.3.0 portal review FAILED on one error + warnings; 0.3.1 clears them (90 vi
 - [ ] **`getSettingDefinitions()`** warning (`settings.ts:24`) deferred: needs Obsidian 1.13 typings + a `minAppVersion` bump to 1.13+, which drops older users. Decide before adopting
 - Left as informational by design: shell execution (`child_process` spawn of `vir`), vault enumeration (Recent tab)
 
+## v0.3.2 (docs: hero screenshot shows the Review tab) — RELEASED 2026-09-29 (tag `0.3.2`)
+Plugin code unchanged from 0.3.1; ships so the marketplace picks up the new README image (PR #6, made-up vir notes only).
+- [x] `docs/screenshot.png` → Review tab (card + flagged queue), README alt text updated
+- [ ] Confirm the marketplace page shows the new image (may lag the release)
+
 ## In progress / next
 - [x] ~~Confirm the `0.1.3` `release.yml` run + portal re-validate.~~ Long done; 0.2.0 has since shipped via the same tag-push → `release.yml` mechanism cleanly.
 - [ ] Portal/marketplace: confirm the listing reflects 0.2.0 (auto-detect from the release); monitor any re-validation.
