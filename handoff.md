@@ -1,8 +1,8 @@
 # Handoff
 
-State as of **2026-09-29**. Plugin at **0.3.0** (released), minAppVersion 1.7.2.
-**90 vitest cases** green, `npm run build` clean. `origin/main` = `9cc565a`
-(merge of #4). Tags `0.2.2` and `0.3.0` pushed; both `release.yml` runs
+State as of **2026-09-29**. Plugin at **0.3.1** (released), minAppVersion 1.7.2.
+**90 vitest cases** green, `npm run build` clean. `origin/main` = `3a580f8`
+(merge of #5). Tags `0.2.2`, `0.3.0` and `0.3.1` pushed; all `release.yml` runs
 succeeded. Requires vir-cli **0.23.0** (on npm as `latest`). Only `main`
 remains on the remote.
 
@@ -18,9 +18,17 @@ message). It talks to the new `vir review --json` modes (vir PR #69). Built via
 spec → plan → subagent-driven tasks, with a per-task review, a final Opus review,
 a fix wave, and a live manual pass in the real vault.
 
+**0.3.1** (#5): fixes the 0.3.0 portal-review failure: the one error (inline
+`style.cursor` → CSS class), the `no-unsafe-assignment` warning (typed
+`loadData`), and adds build-provenance attestations to `release.yml`. The
+`getSettingDefinitions()` warning is deliberately deferred (needs
+`minAppVersion` 1.13+). Release hiccup: a first `0.3.1` tag was pushed before
+the PR merged (bad build); tag, run and draft release were deleted and it was
+re-tagged from the merge commit.
+
 ## In flight
 
-- Nothing uncommitted except this handoff and `tasks/todo.md` (sync edits).
+- Nothing uncommitted except this handoff and `tasks/todo.md` (sync edits). `tasks/lessons.md` is globally gitignored, so it stays local.
 - The installed plugin in `~/Vir/vir/.obsidian/plugins/vir/` is a pre-release
   0.3.0 build (same code); update from the marketplace to align.
 
@@ -35,8 +43,10 @@ a fix wave, and a live manual pass in the real vault.
 
 ## Next session: start here
 
+0. Check the marketplace rescan of 0.3.1 cleared the error, and run
+   `gh attestation verify main.js --repo djolex999/vir-obsidian` on the asset.
 1. Run the save-before-approve check in a throwaway vault (steps in
-   `tasks/todo.md` under v0.3.0). If it fails, ship 0.3.1.
+   `tasks/todo.md` under v0.3.0). If it fails, ship 0.3.2.
 2. Recapture `tests/contract/fixtures/query.json` filtered to `vir` notes
    (it predates the filter rule).
 3. Then roadmap: 0.4.0 Topics tab + Compose action (`vir compose` would need a

@@ -67,14 +67,23 @@ The CLI emitted `pdf` notes (vir-cli 0.11.0+) that the plugin only rendered as a
 - [ ] Recapture `tests/contract/fixtures/query.json` with a vir-only filter (it predates the filter rule)
 - [ ] Deferred minors (final review: CAN-WAIT): isolate onChange listeners in ReviewStore.emit; stale-fetch race in undoReject; dedupe ensureReviewSupport while CLI unreachable + filter metadataCache "changed" to the active file; header "0·0·0" above a first-fetch error; notice padding click still dismisses without undo; gate approve/reject commands on CLI ≥ 0.23.0
 
+## v0.3.1 (portal review lint fixes) — RELEASED 2026-09-29 (#5 → `3a580f8`, tag `0.3.1`)
+The 0.3.0 portal review FAILED on one error + warnings; 0.3.1 clears them (90 vitest cases, build clean).
+- [x] **Error `obsidianmd/no-static-styles-assignment`** (`review-controller.ts:94`): inline `style.cursor` → `.vir-undo-notice { cursor: pointer }` in `styles.css`
+- [x] **Warning `no-unsafe-assignment`** (`main.ts:115`): `loadData()` cast to `Partial<VirSettings> | null` before the merge
+- [x] **Build provenance attestations**: `release.yml` gets `id-token`/`attestations: write` + `actions/attest-build-provenance@v2` over `main.js`/`manifest.json`/`styles.css`. Run succeeded; attestation itself not yet verified (`gh attestation verify main.js --repo djolex999/vir-obsidian`)
+- [ ] Confirm the marketplace rescan of 0.3.1 clears the error
+- [ ] **`getSettingDefinitions()`** warning (`settings.ts:24`) deferred: needs Obsidian 1.13 typings + a `minAppVersion` bump to 1.13+, which drops older users. Decide before adopting
+- Left as informational by design: shell execution (`child_process` spawn of `vir`), vault enumeration (Recent tab)
+
 ## In progress / next
 - [x] ~~Confirm the `0.1.3` `release.yml` run + portal re-validate.~~ Long done; 0.2.0 has since shipped via the same tag-push → `release.yml` mechanism cleanly.
 - [ ] Portal/marketplace: confirm the listing reflects 0.2.0 (auto-detect from the release); monitor any re-validation.
 - [ ] **Clean up old failed/stale CI runs** (the 0.1.2 double-fire run `27017762251`) — cosmetic.
 
 ## Backlog
-- [ ] **STILL OVERDUE — bump GH Actions `checkout@v4` + `setup-node@v4` → `@v5`** (was due 2026-06-02). The 0.2.0 `release.yml` run still succeeded, so the actions aren't broken yet — but the Node-20 deprecation is on borrowed time. Bump on the next release touch.
-- [ ] **Add GitHub artifact attestations to `release.yml`** (`actions/attest-build-provenance`) for the release assets — the community-portal validation flagged missing attestations as an informational recommendation (not a blocker). Adds supply-chain provenance for `main.js`/`manifest.json`/`styles.css`. Someday, not urgent.
+- [x] ~~**bump GH Actions `checkout@v4` + `setup-node@v4` → `@v5`**~~ Already `@v5` in `release.yml` (verified 0.3.1). Original note: (was due 2026-06-02). The 0.2.0 `release.yml` run still succeeded, so the actions aren't broken yet — but the Node-20 deprecation is on borrowed time. Bump on the next release touch.
+- [x] ~~**Add GitHub artifact attestations to `release.yml`**~~ Done in 0.3.1. (`actions/attest-build-provenance`) for the release assets — the community-portal validation flagged missing attestations as an informational recommendation (not a blocker). Adds supply-chain provenance for `main.js`/`manifest.json`/`styles.css`. Someday, not urgent.
 - [x] **Release mechanism decided: tag-push → `release.yml`** (NOT `gh release create`). 0.1.3 used it cleanly; codified in CLAUDE.md. `gh release create` is what double-fired 0.1.2.
 - [ ] Swap placeholder out-links once live: marketplace link in README; "The Compounding Codebase" manifesto at djordje.dev
 - [ ] (Optional cleanup) delete stale `0.1.0` release + `v0.1.0-rc.1` prerelease once a later version is accepted
