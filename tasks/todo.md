@@ -71,7 +71,7 @@ The CLI emitted `pdf` notes (vir-cli 0.11.0+) that the plugin only rendered as a
 The 0.3.0 portal review FAILED on one error + warnings; 0.3.1 clears them (90 vitest cases, build clean).
 - [x] **Error `obsidianmd/no-static-styles-assignment`** (`review-controller.ts:94`): inline `style.cursor` → `.vir-undo-notice { cursor: pointer }` in `styles.css`
 - [x] **Warning `no-unsafe-assignment`** (`main.ts:115`): `loadData()` cast to `Partial<VirSettings> | null` before the merge
-- [x] **Build provenance attestations**: `release.yml` gets `id-token`/`attestations: write` + `actions/attest-build-provenance@v2` over `main.js`/`manifest.json`/`styles.css`. Run succeeded; attestation itself not yet verified (`gh attestation verify main.js --repo djolex999/vir-obsidian`)
+- [x] **Build provenance attestations**: `release.yml` gets `id-token`/`attestations: write` + `actions/attest-build-provenance@v2` over `main.js`/`manifest.json`/`styles.css`. Run succeeded; attestation verified 2026-09-29 for all 3 assets (SLSA provenance, signed by `release.yml@refs/tags/0.3.1`, commit `3a580f8`)
 - [ ] Confirm the marketplace rescan of 0.3.1 clears the error
 - [ ] **`getSettingDefinitions()`** warning (`settings.ts:24`) deferred: needs Obsidian 1.13 typings + a `minAppVersion` bump to 1.13+, which drops older users. Decide before adopting
 - Left as informational by design: shell execution (`child_process` spawn of `vir`), vault enumeration (Recent tab)
