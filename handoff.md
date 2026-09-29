@@ -1,9 +1,9 @@
 # Handoff
 
 State as of **2026-09-29**. Plugin at **0.3.2** (released), minAppVersion 1.7.2.
-**90 vitest cases** green, `npm run build` clean. `origin/main` = `3a580f8`
-(merge of #5). Tags `0.2.2`, `0.3.0`, `0.3.1` and `0.3.2` pushed; all `release.yml` runs
-succeeded. Requires vir-cli **0.23.0** (on npm as `latest`). Only `main`
+**90 vitest cases** green, `npm run build` clean. Tag `0.3.2` = `5546682`
+(merge of #7; only docs commits since). Tags `0.2.2`, `0.3.0`, `0.3.1` and `0.3.2` pushed;
+all `release.yml` runs succeeded. Requires vir-cli **0.23.0** (on npm as `latest`). Only `main`
 remains on the remote.
 
 ## Where we left off
