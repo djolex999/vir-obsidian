@@ -82,8 +82,9 @@ Plugin code unchanged from 0.3.1; ships so the marketplace picks up the new READ
 - [x] Marketplace confirmed 2026-09-29: current version 0.3.2, new screenshot showing (README image loads from `HEAD`, so it updated before the release did), Review still Satisfactory
 
 ## In progress / next
+- [ ] **Remove the leftover `sbvault` vault from Obsidian** (File → Open Vault… → "…" → Remove from list; close its window). The folder `~/sbv-root` is already deleted, so the entry is dead.
 - [x] ~~Confirm the `0.1.3` `release.yml` run + portal re-validate.~~ Long done; 0.2.0 has since shipped via the same tag-push → `release.yml` mechanism cleanly.
-- [ ] Portal/marketplace: confirm the listing reflects 0.2.0 (auto-detect from the release); monitor any re-validation.
+- [x] ~~Portal/marketplace: confirm the listing reflects 0.2.0~~ Long done; marketplace tracked 0.2.0 → 0.3.2 via `Check for new releases` + tag-push releases.
 - [ ] **Clean up old failed/stale CI runs** (the 0.1.2 double-fire run `27017762251`) — cosmetic.
 
 ## Backlog
