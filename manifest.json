@@ -6,5 +6,6 @@
 	"description": "An LLM Wiki for Claude Code, in your vault sidebar. Surface relevant notes from your distilled session knowledge as you work.",
 	"author": "Djordje Marković",
 	"authorUrl": "https://github.com/djolex999",
+	"fundingUrl": "https://ko-fi.com/djmarkovic",
 	"isDesktopOnly": true
 }

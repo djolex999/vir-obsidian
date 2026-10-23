@@ -70,6 +70,7 @@ Edits to a note's body are replaced the next time vir rewrites it; approve recor
 ## Links
 
 - **vir CLI** — [`@djolex999/vir-cli` on npm](https://www.npmjs.com/package/@djolex999/vir-cli)
+- **Support**: [buy me a coffee on Ko-fi](https://ko-fi.com/djmarkovic) if vir helps you
 - **The Compounding Codebase** — the manifesto behind vir.
 
 ## License
